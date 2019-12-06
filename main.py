@@ -54,9 +54,11 @@ class SeerSegmentation():
 
         return matting_net_forAndroid(input_size=(self.input_shape[0], self.input_shape[1], 4), batchnorm=False)
 
-    def train(self):
+    def train(self, finetune=False):
 
         self.model = self.build_model(batchnorm=True)
+        if finetune:
+            self.fill_weight()
 
         train_params = {
             'dim': self.input_shape,
@@ -181,6 +183,7 @@ if __name__ == '__main__':
     args.add_argument('--tflite_name', type=str, default="")
 
     args.add_argument('--train', type=bool, default=False)
+    args.add_argument('--finetune', type=bool, default=False)
     args.add_argument('--infer_single_img', type=bool, default=False)
     args.add_argument('--convert', type=bool, default=False)
     args.add_argument('--android', type=bool, default=False)
@@ -192,7 +195,7 @@ if __name__ == '__main__':
     seerSeg = SeerSegmentation(config)
 
     if config.train:
-        seerSeg.train()
+        seerSeg.train(config.finetune)
 
     if config.infer_single_img:
         seerSeg.infer_single_img(config.img_path)
