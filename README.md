@@ -1,8 +1,6 @@
 # Portrait-segmentation
 
-----
-
-### Todo 
+##### Todo 
 
 - Capturing the present model output to compare with the better one.
 
@@ -10,11 +8,17 @@
 
 ​	1) Edges are inconsistent 
 
-- Model Uncertainty - More data, more Training, Photomatric distortion
+​		- Model Uncertainty - More data, more Training, Photomatric distortion
 
 ​	2) Segmenting wrong object
 
-- More data
+​		- More data
+
+3) 삼성폰에서 Softmax가 잘 작동되지 않는 것
+
+		- 내가 Sigmoid, Softmax, Sigsoftmax  실험 해보기
+
+
 
 ### 1) Task Specification 
 
@@ -24,6 +28,22 @@
 
 3. ? Output post-processing
    - during the process to make the output of the model to the image original resolution
+
+
+
+#### Previous model 
+
+`portrait_segmentation_seerslab_256_4channels.tflite` : with softmax
+
+`portrait_segmentation_seerslab_256_without_softmax_4channels_filter_191021_3rd.tflite` : no softmax
+
+
+
+## Contribution 
+
+1. 삼성폰에서 Softmax를 썼을 때 이상하게 추론되는 문제 
+2. 
+3. 
 
 ##### Extra1) Concepts
 
@@ -35,8 +55,6 @@
 $$
 Image = \alpha Image + (1-\alpha) Image
 $$
-
-
 
 ----
 
