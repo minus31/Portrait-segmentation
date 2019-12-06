@@ -18,7 +18,7 @@ class SeerSegmentation():
 
     def __init__(self, config):
 
-        self.input_shape = config.input_shape
+        self.input_shape = (config.input_shape, config.input_shape, 3)
         
         if config.train:
             self.batch_size = config.batch_size
@@ -170,7 +170,7 @@ if __name__ == '__main__':
     args = argparse.ArgumentParser()
 
     # hyperparameters
-    args.add_argument('--input_shape', type=tuple, default=(256,256,3))
+    args.add_argument('--input_shape', type=int, default=256)
     args.add_argument('--nb_epoch', type=int, default=1000)
     args.add_argument('--batch_size', type=int, default=32)
     args.add_argument('--lr', type=float, default=0.00045)
