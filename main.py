@@ -14,6 +14,11 @@ import os
 import time
 import argparse
 
+def get_current_day():
+        import datetime
+        now = datetime.datetime.now()
+        return now.strftime('%Y%m%d')
+
 
 class SeerSegmentation():
 
@@ -36,11 +41,6 @@ class SeerSegmentation():
         self.weight_dir = config.weight_dir# default=None
 
         self.img_paths = np.load("./dataset/selfie/img_paths.npy")
-
-    def get_current_day():
-        import datetime
-        now = datetime.datetime.now()
-        return now.strftime('%Y%m%d')
 
     def fill_weight(self):
 

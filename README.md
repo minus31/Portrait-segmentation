@@ -2,7 +2,7 @@
 
 #### train command
 
-`python3 main.py --input_shape=(256,256,3) --nb_epoch=1000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 checkpoint_path='./trained_models' --weight_dir="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/trained_models/portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=True --convert=True --android=True`
+`python3 main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/trained_models/portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=True --convert=True --android=True`
 
 
 
