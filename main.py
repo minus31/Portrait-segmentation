@@ -49,7 +49,7 @@ class SeerSegmentation():
 
     def build_model(self, batchnorm=False):
 
-        return mattting_net(input_size=self.input_shape, batchnorm=batchnorm)
+        return matting_net(input_size=self.input_shape, batchnorm=batchnorm)
 
     def build_model_forAndroid(self):
 
