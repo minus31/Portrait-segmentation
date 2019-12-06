@@ -13,7 +13,7 @@ def sig_soft_max(x, axis=-1):
     return sigsoft / K.sum(sigsoft, axis=-1, keepdims=True)
 
 # for android 4채널
-def matting_net(input_size=(256,256,3), batchnorm=False):
+def matting_net(input_size=(256,256,3), batchnorm=False, android=False:
     ###########
     # Encoder #
     ###########
