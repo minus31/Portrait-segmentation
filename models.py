@@ -1,7 +1,7 @@
 import numpy as np
 from keras.layers import *
 from keras.models import *
-from keras.layers import Conv2D, SeparableConv2D, Conv2DTranspose, add, ReLU, Dropout, Reshape, Permute, Input, Activation, ADD, BatchNormalization
+from keras.layers import Conv2D, SeparableConv2D, Conv2DTranspose, add, ReLU, Dropout, Reshape, Permute, Input, Activation, Add, BatchNormalization
 from keras.activations import sigmoid
 from keras import backend as K
 import tensorflow as tf
