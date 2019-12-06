@@ -30,14 +30,14 @@ class PortraitAugment(object):
         img, mask = self.__hflip(img, mask, run_prob=0.5)
         img, mask = self.__rotate_and_scale(img, mask, angle_range, scale_range)
         img = self.__gamma(img, gamma_range)
-        # img, mask = self.__resize(img, mask, output_size)
+
         return img, mask
     
     def __hflip(self, img, mask, run_prob=0.5):
         if np.random.rand() < run_prob:
             return img, mask
         img = np.fliplr(img)
-        mask = np.fliplr(mask[:,:,np.newaxis])
+        mask = np.fliplr(np.expand_dims(mask, axis=-1))
         return img, mask.squeeze()
 
     def __rotate_and_scale(self, img, mask, angle_range, scale_range):
