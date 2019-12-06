@@ -58,8 +58,8 @@ class SeerSegmentation():
     def train(self, finetune=False):
 
         self.model = self.build_model(batchnorm=True)
-        if finetune:
-            self.model.load_weights(self.weight_dir)
+        # if finetune:
+        #     self.model.load_weights(self.weight_dir)
 
         train_params = {
             'dim': self.input_shape,
@@ -134,7 +134,7 @@ class SeerSegmentation():
 
     def infer_single_img(self, img_path):
         self.model = self.build_model(batchnorm=False)
-        self.model.load_weights(self.weight_dir)
+        # self.model.load_weights(self.weight_dir)
 
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)[np.newaxis,:,:,::-1]
         resize_img = cv2.resize(img, input_shape[:2][::-1]) 
@@ -152,7 +152,7 @@ class SeerSegmentation():
             self.model = self.build_model(batchnorm=False)
 
 
-        self.model.load_weights(self.weight_dir)
+        # self.model.load_weights(self.weight_dir)
 
         input_names = [node.op.name for node in model.inputs]
         output_names = [node.op.name for node in model.outputs]
