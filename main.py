@@ -41,25 +41,20 @@ class SeerSegmentation():
         self.weight_dir = config.weight_dir# default=None
 
         self.img_paths = np.load("./dataset/selfie/img_paths.npy")
-
-    def fill_weight(self):
-
-        self.model.load_weights(self.weight_dir)
-        return None
-
+        
     def build_model(self, batchnorm=False):
 
         return matting_net(input_size=self.input_shape, batchnorm=batchnorm, android=False)
 
-    def build_model_forAndroid(self):
+    def build_model_forAndroid(self, batchnorm=False):
 
-        return matting_net(input_size=(self.input_shape[0], self.input_shape[1], 4), batchnorm=False, android=True)
+        return matting_net(input_size=(self.input_shape[0], self.input_shape[1], 4), batchnorm=batchnorm, android=True)
 
     def train(self, finetune=False):
 
         self.model = self.build_model(batchnorm=True)
         if finetune:
-            self.fill_weight()
+            self.model.load_weights(self.weight_dir)
 
         train_params = {
             'dim': self.input_shape,
@@ -134,7 +129,7 @@ class SeerSegmentation():
 
     def infer_single_img(self, img_path):
         self.model = self.build_model(batchnorm=False)
-        self.fill_weight()
+        self.model.load_weights(self.weight_dir)
 
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)[np.newaxis,:,:,::-1]
         resize_img = cv2.resize(img, input_shape[:2][::-1]) 
@@ -147,12 +142,12 @@ class SeerSegmentation():
 
     def convert_tflite(tflite_name, android=False):
         if android : 
-            self.model = self.build_model_forAndroid()
+            self.model = self.build_model_forAndroid(batchnorm=False)
         else : 
             self.model = self.build_model(batchnorm=False)
 
 
-        self.fill_weight()
+        self.model.load_weights(self.weight_dir)
 
         input_names = [node.op.name for node in model.inputs]
         output_names = [node.op.name for node in model.outputs]
