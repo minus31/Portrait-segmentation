@@ -37,8 +37,8 @@ class PortraitAugment(object):
         if np.random.rand() < run_prob:
             return img, mask
         img = np.fliplr(img)
-        mask = np.fliplr(mask)
-        return img, mask
+        mask = np.fliplr(mask[:,:,np.newaxis])
+        return img, mask.squeeze()
 
     def __rotate_and_scale(self, img, mask, angle_range, scale_range):
         if type(angle_range) == int:
