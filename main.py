@@ -104,7 +104,7 @@ class SeerSegmentation():
 
         for epoch in range(self.nb_epoch):
             t1 = time.time()
-            res = model.fit_generator(generator=train_gen,
+            res = self.model.fit_generator(generator=train_gen,
                                       validation_data=test_gen,
                                       steps_per_epoch=STEP_SIZE_TRAIN,
                                       initial_epoch=epoch,
