@@ -7,6 +7,7 @@ from keras.layers import Conv2D, SeparableConv2D, Conv2DTranspose, add, ReLU, Dr
 from keras.activations import sigmoid
 from keras.utils.generic_utils import CustomObjectScope
 from keras import backend as K
+from keras.callbacks import ReduceLROnPlateau
 
 from data_generator import DataGeneratorMatting
 from metrics import *
@@ -14,6 +15,8 @@ from models import *
 import os
 import time
 import argparse
+
+import cv2
 
 def get_current_day():
         import datetime
@@ -79,11 +82,11 @@ class SeerSegmentation():
         }
         
         img_paths = self.img_paths
-        train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
-        test_img_paths = np.setdiff1d(img_paths, train_img_paths)
+        self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
+        self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
 
-        train_gen = DataGeneratorMatting(train_img_paths, **train_params)
-        test_gen = DataGeneratorMatting(test_img_paths, **test_params)
+        train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
+        test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
 
         opt = keras.optimizers.adam(lr=self.lr, amsgrad=True)
@@ -100,7 +103,7 @@ class SeerSegmentation():
 
         """ Training loop """
         STEP_SIZE_TRAIN = len(self.train_img_paths) // train_gen.batch_size
-        STEP_SIZE_VAL = len(self.test_img_paths) // val_gen.batch_size
+        STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
         t0 = time.time()
 
         for epoch in range(self.nb_epoch):
@@ -120,14 +123,14 @@ class SeerSegmentation():
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
             # step 마다 id list를 섞어서 train, Val generator를 새로 생성
-            train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
-            test_img_paths = np.setdiff1d(img_paths, train_img_paths)
+            self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
+            self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
 
-            train_gen = DataGeneratorMatting(train_img_paths, **train_params)
-            test_gen = DataGeneratorMatting(test_img_paths, **test_params)
+            train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
+            test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
             if epoch % self.checkpoint == 0:
-                model.save_weights(os.path.join(self.checkpoint_path, str(epoch)))
+                self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch)))
 
         print("Entire training time has been taken {} ", t2 - t0)
 
@@ -138,7 +141,7 @@ class SeerSegmentation():
         # self.model.load_weights(self.weight_dir)
 
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)[np.newaxis,:,:,::-1]
-        resize_img = cv2.resize(img, input_shape[:2][::-1]) 
+        resize_img = cv2.resize(img, self.input_shape[:2][::-1]) 
         norm_img = resize_img / 255.0
         pred = self.model.predict(norm_img) * 255.0
 
@@ -155,17 +158,19 @@ class SeerSegmentation():
 
         # self.model.load_weights(self.weight_dir)
 
-        input_names = [node.op.name for node in model.inputs]
-        output_names = [node.op.name for node in model.outputs]
+        input_names = [node.op.name for node in self.model.inputs]
+        output_names = [node.op.name for node in self.model.outputs]
 
         print(input_names)
         print(output_names)
 
         sess = K.get_session()
-        converter = tf.lite.TFLiteConverter.from_session(sess, model.inputs, model.outputs)
+        converter = tf.lite.TFLiteConverter.from_session(sess, self.model.inputs, self.model.outputs)
 
         tflite_model = converter.convert()
         open(tflite_name, "wb").write(tflite_model)
+        return None
+
 
 
 if __name__ == '__main__':
