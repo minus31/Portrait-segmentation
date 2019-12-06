@@ -4,7 +4,7 @@
 
 - Train
 
-`python3 main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="etc.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=False --convert=False --android=False`
+`python3 main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=False --convert=False --android=False`
 
 * Fine-Tuning
 

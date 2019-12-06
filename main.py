@@ -38,8 +38,13 @@ class SeerSegmentation():
         if not os.path.exists(self.checkpoint_path):
             os.mkdir(self.checkpoint_path)
         
-        self.weight_dir = config.weight_dir# default=None
+        ##############################################  < 고쳐야함
+        if config.fine_tune or config.infer_single_img:
+            self.weight_dir = config.weight_dir# default=None
 
+        if config.convert:
+            self.weight_dir = config.weight_dir# default=None
+        ##############################################
         self.img_paths = np.load("./dataset/selfie/img_paths.npy")
         
     def build_model(self, batchnorm=False):
