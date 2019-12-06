@@ -12,14 +12,20 @@ def sig_soft_max(x, axis=-1):
 
     return sigsoft / K.sum(sigsoft, axis=-1, keepdims=True)
 
-# for android 4채널
-def matting_net(input_size=(256,256,3), batchnorm=False):
+def matting_net(input_size=(256,256,3), batchnorm=False, android=False):
     ###########
     # Encoder #
     ###########
     ## 1st line
-    inputs = Input(input_size)
-    conv1 = Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs)
+    
+    if android:
+        inputs = Input(input_size)
+        inputs_s = Lambda(lambda x: x[:, :, :, :3])(inputs)
+        conv1 = Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs_s)
+    else:
+        inputs = Input(input_size)
+        conv1 = Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs)
+        
     conv1 = residual_block(conv1, filters=8, kernel_size=(3, 3), batchnorm=batchnorm)
 
     ## 2nd line
@@ -81,16 +87,6 @@ def matting_net(input_size=(256,256,3), batchnorm=False):
         conv6 = Conv2D(3, (1, 1))(conv6)
     else:
         conv6 = Conv2D(3, (1, 1))(conv1_inv)
-    
-#     Fs = Lambda(lambda x: x[:, :, :, 0:1])(conv6)
-#     Us = Lambda(lambda x: x[:, :, :, 1:2])(conv6)
-#     Bs = Lambda(lambda x: x[:, :, :, 2:])(conv6)
-    
-# #     Fs = Activation('sigmoid')(Fs)
-# #     Us = Activation('sigmoid')(Us)
-# #     Bs = Activation('sigmoid')(Bs)
-    
-#     x = Concatenate(axis=-1)([Fs, Us, Bs])
 
     x = Activation('tanh')(conv6)
 #     x = Lambda(lambda x: sig_soft_max(x))(conv6)
