@@ -66,7 +66,7 @@ class SeerSegmentation():
         #     self.model.load_weights(self.weight_dir)
 
         train_params = {
-            'dim': self.input_shape,
+            'dim': self.input_shape[:2],
             'batch_size': self.batch_size,
             'n_channels': self.input_shape[-1],
             'shuffle': True,
@@ -74,7 +74,7 @@ class SeerSegmentation():
         }
 
         test_params = {
-            'dim': self.input_shape,
+            'dim': self.input_shape[:2],
             'batch_size': self.batch_size,
             'n_channels': self.input_shape[-1],
             'shuffle': True,
