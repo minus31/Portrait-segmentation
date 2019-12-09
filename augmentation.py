@@ -40,6 +40,13 @@ class PortraitAugment(object):
         mask = np.fliplr(np.expand_dims(mask, axis=-1))
         return img, mask.squeeze()
 
+    def __vflip(self, img, mask, run_prob=0.5):
+        if np.random.rand() < run_prob:
+            return img, mask
+        img = np.flipud(img)
+        mask = np.flipud(np.expand_dims(mask, axis=-1))
+        return img, mask.squeeze()
+
     def __rotate_and_scale(self, img, mask, angle_range, scale_range):
         if type(angle_range) == int:
             angle = angle_range

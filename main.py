@@ -94,9 +94,9 @@ class SeerSegmentation():
 
         opt = keras.optimizers.adam(lr=self.lr, amsgrad=False)
 
-        self.model.compile(loss='binary_crossentropy',
+        self.model.compile(loss=matting_loss,
                       optimizer=opt,
-                      metrics=[iou_coef, focal_loss()])
+                      metrics=[iou_coef, focal_loss(), 'accuracy'])
 
         """ Callback """
         monitor = 'loss'
