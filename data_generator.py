@@ -50,8 +50,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
 
         if self.augment:
-            img, mask = aug.augment(img, mask,
-                                             aug_params['angle_range'], aug_params['scale_range'], aug_params['gamma_range'])
+            img, mask = aug.augment(img, mask, aug_params)
         
         # Resize image and mask
         h, w = self.dim
