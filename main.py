@@ -18,6 +18,9 @@ import argparse
 
 import cv2
 
+import warnings
+warnings.filterwarnings("ignore")
+
 def get_current_day():
         import datetime
         now = datetime.datetime.now()
@@ -89,7 +92,7 @@ class SeerSegmentation():
         test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
 
-        opt = keras.optimizers.adam(lr=self.lr, amsgrad=True)
+        opt = keras.optimizers.adam(lr=self.lr, amsgrad=False)
 
         self.model.compile(loss='binary_crossentropy',
                       optimizer=opt,
