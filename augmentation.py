@@ -19,9 +19,10 @@ class PortraitAugment(object):
         Args:
             img: a numpy type
             mask: a numpy type
-            angle_range: range for randomly rotation.  eg: 45 or (-45, 45)
-            scale_range: scale img, mask.  eg: 0.5 or (0.5, 1.5)
-            gamma_range: range for color gamma correction.  eg: 0.6 or (0.6, 1.5)
+            param_dict : 
+                - angle_range: range for randomly rotation.  eg: 45 or (-45, 45),
+                - scale_range: scale img, mask.  eg: 0.5 or (0.5, 1.5),
+                - gamma_range: range for color gamma correction.  eg: 0.6 or (0.6, 1.5),
         Return:
             an image and mask with target size will be return
         Raises:
@@ -31,10 +32,10 @@ class PortraitAugment(object):
         # Need to transform the labels
         img, mask = self.__hflip(img, mask, run_prob=0.5)
         img, mask = self.__vflip(img, mask, run_prob=0.5)
-        img, mask = self.__rotate_and_scale(img, mask, param_dict.angle_range, param_dict.scale_range)
+        img, mask = self.__rotate_and_scale(img, mask, param_dict["angle_range"], param_dict["scale_range"])
 
         # Don't need to transform the labels
-        img = self.__gamma(img, param_dict.gamma_range)
+        img = self.__gamma(img, param_dict["gamma_range"])
 
         return img, mask
     
