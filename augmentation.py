@@ -13,7 +13,7 @@ class PortraitAugment(object):
     def __init__(self):
         pass
 
-    def augment(self, img, mask, angle_range, scale_range, gamma_range):
+    def augment(self, img, mask, param_dict):
         """
         Do image and mask augment.
         Args:
@@ -27,12 +27,18 @@ class PortraitAugment(object):
         Raises:
             No
         """
+
+        # Need to transform the labels
         img, mask = self.__hflip(img, mask, run_prob=0.5)
-        img, mask = self.__rotate_and_scale(img, mask, angle_range, scale_range)
-        img = self.__gamma(img, gamma_range)
+        img, mask = self.__vflip(img, mask, run_prob=0.5)
+        img, mask = self.__rotate_and_scale(img, mask, param_dict.angle_range, param_dict.scale_range)
+
+        # Don't need to transform the labels
+        img = self.__gamma(img, param_dict.gamma_range)
 
         return img, mask
     
+    ##### The methods need label transformation #####
     def __hflip(self, img, mask, run_prob=0.5):
         if np.random.rand() < run_prob:
             return img, mask
@@ -72,6 +78,9 @@ class PortraitAugment(object):
         mask = cv2.warpAffine(mask, M, (w, h))
 
         return img, mask
+
+
+    ##### The methods don't need label transformation #####
 
     def __gamma(self, img, gamma_range):
         if type(gamma_range) == float:

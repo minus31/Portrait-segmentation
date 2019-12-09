@@ -91,23 +91,23 @@ def matting_net(input_size, batchnorm=False, android=False):
     else:
         conv6 = Conv2D(3, (1, 1))(conv1_inv)
     
-    Fs = Lambda(lambda x: x[:, :, :, 0:1])(conv6)
-    Us = Lambda(lambda x: x[:, :, :, 1:2])(conv6)
-    Bs = Lambda(lambda x: x[:, :, :, 2:])(conv6)
+    # Fs = Lambda(lambda x: x[:, :, :, 0:1])(conv6)
+    # Us = Lambda(lambda x: x[:, :, :, 1:2])(conv6)
+    # Bs = Lambda(lambda x: x[:, :, :, 2:])(conv6)
     
-    Fs = Lambda(lambda x : K.exp(x))(Fs)
-    Us = Lambda(lambda x : K.exp(x))(Us)
-    Bs = Lambda(lambda x : K.exp(x))(Bs)
+    # Fs = Lambda(lambda x : K.exp(x))(Fs)
+    # Us = Lambda(lambda x : K.exp(x))(Us)
+    # Bs = Lambda(lambda x : K.exp(x))(Bs)
 
-    s_exp = Add(name="add_exps")([Fs, Us, Bs])
+    # s_exp = Add(name="add_exps")([Fs, Us, Bs])
 
-    div_Fs = Lambda(lambda x : x[0] / x[1])([Fs, s_exp])
-    div_Us = Lambda(lambda x : x[0] / x[1])([Us, s_exp])
-    div_Bs = Lambda(lambda x : x[0] / x[1])([Bs, s_exp])
+    # div_Fs = Lambda(lambda x : x[0] / x[1])([Fs, s_exp])
+    # div_Us = Lambda(lambda x : x[0] / x[1])([Us, s_exp])
+    # div_Bs = Lambda(lambda x : x[0] / x[1])([Bs, s_exp])
 
-    x = Concatenate(axis=-1)([div_Fs, div_Us, div_Bs])
+    # x = Concatenate(axis=-1)([div_Fs, div_Us, div_Bs])
 
-    # x = Activation('tanh')(conv6)
+    x = Activation('linear')(conv6)
     # x = Lambda(lambda x: sig_soft_max(x))(conv6)
     
     shortcut = x
