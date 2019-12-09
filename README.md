@@ -4,11 +4,17 @@
 
 - Train
 
-`python3 main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/home/hyunkim/Portrait-segmentation/trained_models/initial.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=False --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/home/hyunkim/Portrait-segmentation/trained_models/initial.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=False --convert=False --android=False`
 
 * Fine-Tuning
 
 `python3 main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/home/hyunkim/Portrait-segmentation/trained_models/portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=True --convert=False --android=False`
+
+
+
+```bash
+docker run -Pit -u hyunkim:hyunkim --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py390f5cb97b18f
+```
 
 
 

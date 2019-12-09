@@ -99,7 +99,7 @@ class SeerSegmentation():
         monitor = 'loss'
         reduce_lr = ReduceLROnPlateau(monitor=monitor, patience=3)
         """Callback for Tensorboard"""
-        tb = tf.keras.callbacks.TensorBoard(log_dir="./logs/", update_freq='batch')
+        tb = keras.callbacks.TensorBoard(log_dir="./logs/", update_freq='batch')
 
         """ Training loop """
         STEP_SIZE_TRAIN = len(self.train_img_paths) // train_gen.batch_size
