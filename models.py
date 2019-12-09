@@ -2,6 +2,8 @@ import numpy as np
 from keras.layers import *
 from keras.models import *
 from keras.layers import Conv2D, SeparableConv2D, Conv2DTranspose, add, ReLU, Dropout, Reshape, Permute, Input, Activation, Add, BatchNormalization
+from keras.layers import Lambda, Concatenate
+from keras.models import Model
 from keras.activations import sigmoid
 from keras import backend as K
 import tensorflow as tf
@@ -13,13 +15,20 @@ def sig_soft_max(x, axis=-1):
     return sigsoft / K.sum(sigsoft, axis=-1, keepdims=True)
 
 # for android 4채널
-def matting_net(input_size=(256,256,3), batchnorm=False, android=False):
+def matting_net(input_size, batchnorm=False, android=False):
     ###########
     # Encoder #
     ###########
     ## 1st line
-    inputs = Input(input_size)
-    conv1 = Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs)
+    if android:
+        inputs = Input(input_size)
+        # for android 
+        inputs_s = Lambda(lambda x: x[:, :, :, :3])(inputs)
+        conv1 = Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs_s)
+    else:
+        inputs = Input(input_size)
+        conv1 = Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs)
+    
     conv1 = residual_block(conv1, filters=8, kernel_size=(3, 3), batchnorm=batchnorm)
 
     ## 2nd line
@@ -82,18 +91,24 @@ def matting_net(input_size=(256,256,3), batchnorm=False, android=False):
     else:
         conv6 = Conv2D(3, (1, 1))(conv1_inv)
     
-#     Fs = Lambda(lambda x: x[:, :, :, 0:1])(conv6)
-#     Us = Lambda(lambda x: x[:, :, :, 1:2])(conv6)
-#     Bs = Lambda(lambda x: x[:, :, :, 2:])(conv6)
+    Fs = Lambda(lambda x: x[:, :, :, 0:1])(conv6)
+    Us = Lambda(lambda x: x[:, :, :, 1:2])(conv6)
+    Bs = Lambda(lambda x: x[:, :, :, 2:])(conv6)
     
-# #     Fs = Activation('sigmoid')(Fs)
-# #     Us = Activation('sigmoid')(Us)
-# #     Bs = Activation('sigmoid')(Bs)
-    
-#     x = Concatenate(axis=-1)([Fs, Us, Bs])
+    Fs = Lambda(lambda x : K.exp(x))(Fs)
+    Us = Lambda(lambda x : K.exp(x))(Us)
+    Bs = Lambda(lambda x : K.exp(x))(Bs)
 
-    x = Activation('tanh')(conv6)
-#     x = Lambda(lambda x: sig_soft_max(x))(conv6)
+    s_exp = Add(name="add_exps")([Fs, Us, Bs])
+
+    div_Fs = Lambda(lambda x : x[0] / x[1])([Fs, s_exp])
+    div_Us = Lambda(lambda x : x[0] / x[1])([Us, s_exp])
+    div_Bs = Lambda(lambda x : x[0] / x[1])([Bs, s_exp])
+
+    x = Concatenate(axis=-1)([div_Fs, div_Us, div_Bs])
+
+    # x = Activation('tanh')(conv6)
+    # x = Lambda(lambda x: sig_soft_max(x))(conv6)
     
     shortcut = x
     x = ReLU(name='re_lu_24')(x)
