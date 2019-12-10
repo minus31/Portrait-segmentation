@@ -62,7 +62,7 @@ class SeerSegmentation():
 
         return matting_net(input_size=(self.input_shape[0], self.input_shape[1], 4), batchnorm=batchnorm, android=True)
 
-    def train(self, finetune=False):
+    def train(self, finetune=config.finetune):
 
         self.model = self.build_model(batchnorm=True)
         if finetune:
