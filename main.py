@@ -40,6 +40,7 @@ class SeerSegmentation():
             
         self.val_ratio = config.val_ratio# default=0.8
         self.checkpoint = config.checkpoint # default=100
+        self.finetune = config.finetune
 
         self.checkpoint_path = os.path.join(config.checkpoint_path, get_current_day()) # default="trained_models/{get_current_day()}"
         if not os.path.exists(self.checkpoint_path):
@@ -62,7 +63,7 @@ class SeerSegmentation():
 
         return matting_net(input_size=(self.input_shape[0], self.input_shape[1], 4), batchnorm=batchnorm, android=True)
 
-    def train(self, finetune=config.finetune):
+    def train(self, finetune=self.finetune):
 
         self.model = self.build_model(batchnorm=True)
         if finetune:
@@ -200,8 +201,6 @@ if __name__ == '__main__':
 
     config = args.parse_args()
 
-
-    
     seerSeg = SeerSegmentation(config)
 
     if config.train:
