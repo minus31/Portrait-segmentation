@@ -8,7 +8,7 @@
 
 * Fine-Tuning
 
-`python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.000045 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="/tf/hyunkim/Portrait-segmentation/trained_models/initial.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.000045 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./Portrait-segmentation/trained_models/initial.h5" --train=True --finetune=True --convert=False --android=False`
 
 ---
 
@@ -47,6 +47,43 @@ portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h
 ### Tensorboard 명령
 
 `tensorboard --logdir=./logs --port=8080`
+
+
+
+#### Applied Augmentation list 
+
+`nlm : non-lable modified`
+
+- [x] arithmetic (nlm)
+
+  - [x] Add
+  - [ ] AddElementwise       
+  - [ ] AdditiveGaussianNoise
+  - [ ] AdditiveLaplaceNoise 
+  - [ ] AdditivePoissonNoise 
+  - [ ] Multiply              
+  - [ ] MultiplyElementwise   
+  - [ ] Dropout               
+  - [ ] CoarseDropout         
+  - [ ] Dropout2d             
+  - [ ] TotalDropout          
+  - [ ] ReplaceElementwise    
+  - [ ] ImpulseNoise          
+  - [ ] SaltAndPepper         
+  - [ ] CoarseSaltAndPepper   
+  - [ ] Salt                  
+  - [ ] CoarseSalt            
+  - [ ] Pepper                
+  - [ ] CoarsePepper          
+  - [ ] Invert                
+  - [ ] ContrastNormalization 
+  - [ ] JpegCompression       
+
+- [ ] 
+
+
+
+
 
 
 
