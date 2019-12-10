@@ -1,6 +1,12 @@
 # Mac OS
 .DS_Store
 
+#tflite
+*.tflite
+
+# references
+references/
+
 # Datsets 
 dataset/
 

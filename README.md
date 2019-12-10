@@ -4,27 +4,49 @@
 
 - Train
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/home/hyunkim/Portrait-segmentation/trained_models/initial.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=False --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/home/hyunkim/Portrait-segmentation/trained_models/initial.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --tpirain=True --finetune=False --convert=False --android=False`
 
 * Fine-Tuning
 
-`python3 main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/home/hyunkim/Portrait-segmentation/trained_models/portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.00045 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/home/hyunkim/Portrait-segmentation/trained_models/portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --train=True --finetune=True --convert=False --android=False`
 
+---
 
+### 사용가능 Docker 
+
+- opencv
+- keras
+- 
+
+#### 구축 예정 
 
 ```bash
-docker run -Pit -u hyunkim:hyunkim --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py390f5cb97b18f
+docker run -Pit -u hyunkim:hyunkim --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3
 ```
 
+> `e` 태그는 비밀번호 설정하는 것
 
+`docker run -Pit --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3`
+
+---
+
+### 모델 파일 이름
 
 portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h5
 
 -> initial.h5
 
+----
+
 ### 초기 모델 성능 
 
-val_loss_0.0404_val_acc_0.9725_focal_1312.8737
+**`val Matting loss` : 0.0404. `val accuracy` :0.9725. `focal loss`:1312.873**
+
+-----
+
+### Tensorboard 명령
+
+`tensorboard --logdir=./logs --port=8080`
 
 
 
@@ -111,6 +133,7 @@ $$
 
 - Fast Portraits Segmentation : https://github.com/lizhengwei1992/Fast_Portrait_Segmentation
 - Portrait Matting : https://github.com/takiyu/portrait_matting/
+- Semantic Human Matting : https://github.com/lizhengwei1992/Semantic_Human_Matting
 
 ###### • Tensorflow lite
 

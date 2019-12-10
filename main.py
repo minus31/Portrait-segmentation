@@ -65,8 +65,8 @@ class SeerSegmentation():
     def train(self, finetune=False):
 
         self.model = self.build_model(batchnorm=True)
-        # if finetune:
-        #     self.model.load_weights(self.weight_dir)
+        if finetune:
+            self.model.load_weights(self.weight_dir, by_name=True)
 
         train_params = {
             'dim': self.input_shape[:2],
@@ -133,7 +133,7 @@ class SeerSegmentation():
             test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
             if epoch % self.checkpoint == 0:
-                self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch)))
+                self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch) + ".h5"))
 
         print("Entire training time has been taken {} ", t2 - t0)
 

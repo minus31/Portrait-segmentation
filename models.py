@@ -107,7 +107,7 @@ def matting_net(input_size, batchnorm=False, android=False):
 
     # x = Concatenate(axis=-1)([div_Fs, div_Us, div_Bs])
 
-    x = Activation('linear')(conv6)
+    x = Activation('tanh')(conv6)
     # x = Lambda(lambda x: sig_soft_max(x))(conv6)
     
     shortcut = x
