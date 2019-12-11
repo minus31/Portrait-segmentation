@@ -95,6 +95,10 @@ class SeerSegmentation():
 
         opt = keras.optimizers.adam(lr=self.lr)
 
+        # Freeze Trimap network
+        for layer in self.model.layers[:-7]:
+            layer.trainable=False
+
         self.model.compile(loss="binary_crossentropy",
                       optimizer=opt,
                       metrics=[iou_coef, 'accuracy'])
