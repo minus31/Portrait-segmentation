@@ -21,7 +21,7 @@
 #### 구축 예정 
 
 ```bash
-docker run -Pit -u hyunkim:hyunkim --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3
+docker run -Pit -u root:root --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3
 ```
 
 > `e` 태그는 비밀번호 설정하는 것
@@ -29,6 +29,8 @@ docker run -Pit -u hyunkim:hyunkim --name dlhk --rm --runtime=nvidia -v /home/hy
 `docker run -Pit --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3`
 
 ---
+
+
 
 ### 모델 파일 이름
 

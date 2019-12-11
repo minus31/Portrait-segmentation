@@ -46,7 +46,8 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
     def __get_data(self, img_path, mask_path):
         # Load img & mask
-        img = cv2.imread(img_path, cv2.IMREAD_COLOR)[:,:,::-1]
+        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
 
         if self.augment:
@@ -71,6 +72,6 @@ class DataGeneratorMatting(keras.utils.Sequence):
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):
             # Store sample & uv mask
-            X[idx,], y[idx,] = self.__get_data(img_path=ID, 
+            X[idx], y[idx] = self.__get_data(img_path=ID, 
                                                mask_path=ID.split(".p")[0] + "_matte.png")
         return X, y
