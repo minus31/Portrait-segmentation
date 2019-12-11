@@ -8,7 +8,7 @@
 
 * Fine-Tuning
 
-`python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models' --weight_dir="./trained_models/initial.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=28 --checkpoint_path='./trained_models' --weight_dir="./trained_models/initial.h5" --train=True --finetune=True --convert=False --android=False`
 
 ---
 
@@ -183,7 +183,7 @@ $$
 
 [4 *dataset] Farshid Farhat et al. Intelligent Portrait Composition Assistance. http://personal.psu.edu/fuf111/publications/intelligent-portrait-composition-assistance-deep-learning-image-retrieval.pdf
 
-
+[5] Song-Hai Zhang et al. PortraitNet: Real-time Portrait Segmentation Network for Mobile Device. http://www.yongliangyang.net/docs/mobilePotrait_c&g19.pdf
 
 ---
 

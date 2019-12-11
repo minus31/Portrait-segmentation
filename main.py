@@ -26,6 +26,12 @@ def get_current_day():
         now = datetime.datetime.now()
         return now.strftime('%Y%m%d')
 
+## set random state for the comparision of Activation functions 
+from numpy.random import seed
+seed(7777)
+from tensorflow import set_random_seed
+set_random_seed(7777)
+
 
 class SeerSegmentation():
 

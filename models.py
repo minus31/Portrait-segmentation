@@ -101,10 +101,10 @@ def matting_net(input_size, batchnorm=False, android=False):
 
     # x = Concatenate(axis=-1)([div_Fs, div_Us, div_Bs])
 
-    # x = Activation('tanh')(conv6)
+    x = Activation('tanh')(conv6)
     
-    shortcut = conv6
-    x = ReLU(name='re_lu_24')(conv6)
+    shortcut = x
+    x = ReLU(name='re_lu_24')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_47')(x)
     x = Activation('relu', name='activation_27')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48')(x)
