@@ -103,7 +103,7 @@ class SeerSegmentation():
 
         # Freeze Trimap network
         for layer in self.model.layers[:-7]:
-            layer.trainable=False
+            layer.trainable = False
 
         self.model.compile(loss="binary_crossentropy",
                       optimizer=opt,
