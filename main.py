@@ -29,8 +29,8 @@ def get_current_day():
 ## set random state for the comparision of Activation functions 
 from numpy.random import seed
 seed(7777)
-from tensorflow.random import set_random_seed
-set_random_seed(7777)
+from tensorflow import random
+random.set_seed(7777)
 
 
 class SeerSegmentation():
