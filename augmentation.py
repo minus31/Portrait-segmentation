@@ -11,10 +11,10 @@ def random_activate(aug_func):
 
     def wrapper(*args, **kwargs):
         if np.random.choice([0, 1]):
-            print("transformed")
+            # print("transformed")
             return aug_func(*args, **kwargs)
         else:
-            print("NOT transformed")
+            # print("NOT transformed")
             return identity_img(*args, **kwargs)
 
     return wrapper

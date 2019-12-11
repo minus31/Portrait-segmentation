@@ -4,11 +4,11 @@
 
 - Train
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="/home/hyunkim/Portrait-segmentation/trained_models/initial.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --tpirain=True --finetune=False --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models' --weight_dir="./trained_models/initial.h5" --tflite_name="/Users/hyunkim/Desktop/Segmentation/Portrait-segmentation/tflite/191206_tanh.tflite" --tpirain=True --finetune=False --convert=False --android=False`
 
 * Fine-Tuning
 
-`python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.000045 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./trained_models/20191210/580.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models' --weight_dir="./trained_models/initial.h5" --train=True --finetune=True --convert=False --android=False`
 
 ---
 
