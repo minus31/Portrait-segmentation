@@ -105,7 +105,7 @@ class SeerSegmentation():
         # for layer in self.model.layers[:-7]:
         #     layer.trainable = False
 
-        self.model.compile(loss=matting_loss,
+        self.model.compile(loss="binary_cross_entropy",
                       optimizer=opt,
                       metrics=[iou_coef, 'accuracy'])
 
