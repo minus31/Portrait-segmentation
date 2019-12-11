@@ -8,12 +8,6 @@ from keras.activations import sigmoid
 from keras import backend as K
 import tensorflow as tf
 
-def sig_soft_max(x, axis=-1):
-    exp_x = K.exp(x)
-    sigsoft =  K.exp(x) * K.sigmoid(x)
-
-    return sigsoft / K.sum(sigsoft, axis=-1, keepdims=True)
-
 # for android 4채널
 def matting_net(input_size, batchnorm=False, android=False):
     ###########
@@ -108,7 +102,6 @@ def matting_net(input_size, batchnorm=False, android=False):
     # x = Concatenate(axis=-1)([div_Fs, div_Us, div_Bs])
 
     x = Activation('tanh')(conv6)
-    # x = Lambda(lambda x: sig_soft_max(x))(conv6)
     
     shortcut = x
     x = ReLU(name='re_lu_24')(x)

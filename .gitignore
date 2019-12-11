@@ -1,6 +1,11 @@
 # Mac OS
 .DS_Store
 
+#trained Models 
+trained_models/ 
+
+#logs 
+logs/
 #tflite
 *.tflite
 

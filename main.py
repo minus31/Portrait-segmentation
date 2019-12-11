@@ -93,11 +93,11 @@ class SeerSegmentation():
         test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
 
-        opt = keras.optimizers.adam(lr=self.lr, amsgrad=False)
+        opt = keras.optimizers.adam(lr=self.lr)
 
-        self.model.compile(loss=matting_loss,
+        self.model.compile(loss="binary_crossentropy",
                       optimizer=opt,
-                      metrics=[iou_coef, focal_loss(), 'accuracy'])
+                      metrics=[iou_coef, 'accuracy'])
 
         """ Callback """
         monitor = 'loss'
@@ -107,7 +107,7 @@ class SeerSegmentation():
 
         """ Training loop """
         STEP_SIZE_TRAIN = len(self.train_img_paths) // train_gen.batch_size
-        STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
+        # STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
         t0 = time.time()
 
         for epoch in range(self.nb_epoch):
