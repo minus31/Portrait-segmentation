@@ -102,8 +102,8 @@ class SeerSegmentation():
         opt = keras.optimizers.adam(lr=self.lr)
 
         # Freeze Trimap network
-        for layer in self.model.layers[:-7]:
-            layer.trainable = False
+        # for layer in self.model.layers[:-7]:
+        #     layer.trainable = False
 
         self.model.compile(loss=matting_loss,
                       optimizer=opt,
