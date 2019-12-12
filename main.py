@@ -136,7 +136,7 @@ class SeerSegmentation():
                                       shuffle=True)
             t2 = time.time()
             
-            # print(res.history)
+            print(res.history)
             
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
