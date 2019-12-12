@@ -78,7 +78,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         for idx, ID in enumerate(list_IDs_temp):
             # Store sample & uv mask
 
-            mask_ID = ID.split(".p")[1] + "_matte.png"
+            mask_ID = ID.split(".p")[0] + "_matte.png"
             if 'selfie' not in mask_ID:
                 mask_ID.replace("/img/", "/masks_machine/")
             
