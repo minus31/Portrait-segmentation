@@ -51,7 +51,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
         if "selfie" not in mask_path:
-            mask *= 255
+            mask = mask * 255
 
         if self.augment:
             img, mask = aug.augment(img, mask, aug_params)
@@ -78,5 +78,5 @@ class DataGeneratorMatting(keras.utils.Sequence):
         for idx, ID in enumerate(list_IDs_temp):
             # Store sample & uv mask
             X[idx], y[idx] = self.__get_data(img_path=ID, 
-                                               mask_path=ID.split(".p")[0] + "_matte.png")
+                                               mask_path=ID.split(".p")[1] + "_matte.png")
         return X, y
