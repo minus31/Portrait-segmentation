@@ -54,7 +54,11 @@ class DataGeneratorMatting(keras.utils.Sequence):
             mask = mask * 255
 
         if self.augment:
-            img, mask = aug.augment(img, mask, aug_params)
+            try :
+                img, mask = aug.augment(img, mask, aug_params)
+            except : 
+                print(img_path)
+                print(mask_path)
         
         # Resize image and mask
         h, w = self.dim
