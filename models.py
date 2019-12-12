@@ -8,7 +8,7 @@ from keras.activations import sigmoid
 from keras import backend as K
 import tensorflow as tf
 
-# for android 4채널
+
 def matting_net(input_size, batchnorm=False, android=False):
     ###########
     # Encoder #

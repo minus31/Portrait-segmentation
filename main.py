@@ -71,6 +71,7 @@ class SeerSegmentation():
     def train(self, finetune=False):
 
         self.model = self.build_model(batchnorm=True)
+        
         if finetune:
             print('load pre-trained model weights')
             self.model.load_weights(self.weight_dir, by_name=True)
@@ -117,7 +118,7 @@ class SeerSegmentation():
 
         """ Training loop """
         STEP_SIZE_TRAIN = len(self.train_img_paths) // train_gen.batch_size
-        # STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
+        STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
         t0 = time.time()
 
         for epoch in range(self.nb_epoch):
@@ -125,6 +126,7 @@ class SeerSegmentation():
             res = self.model.fit_generator(generator=train_gen,
                                       validation_data=test_gen,
                                       steps_per_epoch=STEP_SIZE_TRAIN,
+                                      validation_steps = STEP_SIZE_VAL,
                                       initial_epoch=epoch,
                                       epochs=epoch + 1,
                                       callbacks=[reduce_lr, tb],
