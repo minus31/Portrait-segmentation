@@ -10,6 +10,12 @@
 
 `python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./trained_models/initial.h5" --train=True --finetune=True --convert=False --android=False`
 
+
+
+
+
+`python main.py --input_shape=256 --nb_epoch=1 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./trained_models/20191212/10.h5" --img_path="./dataset/selfie/training/00694.png" --infer_single_img=True`
+
 ---
 
 ### 사용가능 Docker 

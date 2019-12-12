@@ -123,14 +123,14 @@ class SeerSegmentation():
         STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
         t0 = time.time()
 
-        for epoch in range(self.nb_epoch):
+        for epoch in range(1, self.nb_epoch+1):
             t1 = time.time()
             res = self.model.fit_generator(generator=train_gen,
                                       validation_data=test_gen,
                                       steps_per_epoch=STEP_SIZE_TRAIN,
                                       validation_steps = STEP_SIZE_VAL,
                                       initial_epoch=epoch,
-                                      epochs=epoch + 1,
+                                      epochs=epoch,
                                       callbacks=[reduce_lr, tb],
                                       verbose=1,
                                       shuffle=True)
@@ -157,15 +157,18 @@ class SeerSegmentation():
         return None
 
     def infer_single_img(self, img_path):
-        self.model = self.build_model(batchnorm=False)
-        # self.model.load_weights(self.weight_dir)
 
-        img = cv2.imread(img_path, cv2.IMREAD_COLOR)[np.newaxis,:,:,::-1]
-        resize_img = cv2.resize(img, self.input_shape[:2][::-1]) 
+        self.model = self.build_model(batchnorm=False)
+
+        self.model.load_weights(self.weight_dir)
+
+        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        print(img.shape)
+        resize_img = cv2.resize(img, self.input_shape[:2][::-1])[np.newaxis,:,:,::-1]
         norm_img = resize_img / 255.0
         pred = self.model.predict(norm_img) * 255.0
 
-        cv2.imwrite("./" + "test"  + img_path.split("/")[-1].split(".")[0] + "jpg", pred)
+        cv2.imwrite("./" + "test"  + img_path.split("/")[-1].split(".")[0] + ".png", pred)
 
         return pred
 
@@ -223,7 +226,8 @@ if __name__ == '__main__':
         seerSeg.train(finetune=config.finetune)
 
     if config.infer_single_img:
-        seerSeg.infer_single_img(config.img_path)
+        pred = seerSeg.infer_single_img(config.img_path)
+        print(pred)
 
     if config.convert:
         if config.android:
