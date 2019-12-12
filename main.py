@@ -53,7 +53,6 @@ class SeerSegmentation():
         if not os.path.exists(self.checkpoint_path):
             os.mkdir(self.checkpoint_path)
         
-        ##############################################  < 고쳐야함
         # if config.finetune or config.infer_single_img:
         self.weight_dir = config.weight_dir# default=None
 

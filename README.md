@@ -8,7 +8,7 @@
 
 * Fine-Tuning
 
-`python main.py --input_shape=256 --nb_epoch=1000 --batch_size=32 --lr=0.000045 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./trained_models/20191212/10.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.000045 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./trained_models/20191212/10.h5" --train=True --finetune=True --convert=False --android=False`
 
 - Single image inference 
 
@@ -33,6 +33,8 @@ docker run -Pit -u root:root --name dlhk --rm --runtime=nvidia -v /home/hyunkim:
 `docker run -Pit --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3`
 
 ---
+
+scp -r -i ~/.ssh/hyun.pem ./trained_models/20121212/30.h5 hyunkim@35.229.177.132:/home/hyunkim/Portrait-segmentation/trained_models/ ./
 
 
 
