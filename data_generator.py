@@ -82,6 +82,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
             if 'selfie' not in mask_ID:
                 mask_ID = mask_ID.replace("/img/", "/masks_machine/")
+                mask_ID = mask_ID.replace(".jpeg", "")
             
             X[idx], y[idx] = self.__get_data(img_path=ID, 
                                                mask_path=mask_ID)
