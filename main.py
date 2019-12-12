@@ -123,14 +123,14 @@ class SeerSegmentation():
         STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
         t0 = time.time()
 
-        for epoch in range(1, self.nb_epoch+1):
+        for epoch in range(1, self.nb_epoch + 1):
             t1 = time.time()
             res = self.model.fit_generator(generator=train_gen,
                                       validation_data=test_gen,
                                       steps_per_epoch=STEP_SIZE_TRAIN,
                                       validation_steps = STEP_SIZE_VAL,
                                       initial_epoch=epoch,
-                                      epochs=epoch,
+                                      epochs=epoch + 1,
                                       callbacks=[reduce_lr, tb],
                                       verbose=1,
                                       shuffle=True)
