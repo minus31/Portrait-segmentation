@@ -56,10 +56,10 @@ def rotate_and_scale(img, mask, angle_range, scale_range):
     img = cv2.warpAffine(img, M, (w, h))
 
     # For mask
-    h, w = mask.shape[:2]
-    c_x = w / 2
-    c_y = h / 2
-    M = cv2.getRotationMatrix2D((c_x, c_y), angle, scale)
+    # h, w = mask.shape[:2]
+    # c_x = w / 2
+    # c_y = h / 2
+    # M = cv2.getRotationMatrix2D((c_x, c_y), angle, scale)
     mask = cv2.warpAffine(mask, M, (w, h))
 
     return img, mask

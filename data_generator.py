@@ -50,6 +50,8 @@ class DataGeneratorMatting(keras.utils.Sequence):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        if "selfie" not in mask_path:
+            mask *= 255
 
         if self.augment:
             img, mask = aug.augment(img, mask, aug_params)
@@ -57,10 +59,9 @@ class DataGeneratorMatting(keras.utils.Sequence):
         # Resize image and mask
         h, w = self.dim
         img = cv2.resize(img, (w, h))
-        
         mask = cv2.resize(mask, (w, h))
         # mask thresholding
-        mask = cv2.threshold(mask, 10, 255, cv2.THRESH_BINARY)[1]
+        mask = cv2.threshold(mask, 1, 255, cv2.THRESH_BINARY)[1]
         
         mask = mask[:,:,np.newaxis]
 
