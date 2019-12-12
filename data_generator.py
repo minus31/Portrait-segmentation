@@ -50,7 +50,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-        if "selfie" not in mask_path:
+        if "Supervisely" in mask_path:
             mask = mask * 255
 
         if self.augment:
@@ -84,7 +84,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
             mask_ID = ID.split(".p")[0] + "_matte.png"
 
-            if 'selfie' not in mask_ID:
+            if 'Supervisely' in mask_ID:
                 mask_ID = mask_ID.replace("/img/", "/masks_machine/")
                 mask_ID = mask_ID.replace(".jpeg", "")
             
