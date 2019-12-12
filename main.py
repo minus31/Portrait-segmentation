@@ -166,9 +166,11 @@ class SeerSegmentation():
         print(img.shape)
         resize_img = cv2.resize(img, self.input_shape[:2][::-1])[np.newaxis,:,:,::-1]
         norm_img = resize_img / 255.0
-        pred = self.model.predict(norm_img) * 255.0
-
-        cv2.imwrite("./" + "test"  + img_path.split("/")[-1].split(".")[0] + ".png", pred)
+        print(norm_img.shape)
+        pred = self.model.predict(norm_img) #* 255.0
+        print(pred.shape)
+        pred_modified = pred.squeeze(0).squeeze(-1)
+        cv2.imwrite("./" + "test"  + img_path.split("/")[-1].split(".")[0] + ".png", pred_modified)
 
         return pred
 
