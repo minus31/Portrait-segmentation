@@ -110,7 +110,7 @@ class SeerSegmentation():
 
         self.model.compile(loss="binary_crossentropy",
                       optimizer=opt,
-                      metrics=[iou_coef, 'accuracy'])
+                      metrics=[mean_iou, 'accuracy'])
 
         """ Callback """
         monitor = 'loss'
@@ -174,7 +174,7 @@ class SeerSegmentation():
 
         return pred
 
-    def convert_tflite(tflite_name, android=False):
+    def convert_tflite(self, tflite_name, android=False):
         if android : 
             self.model = self.build_model_forAndroid(batchnorm=False)
         else : 

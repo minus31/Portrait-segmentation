@@ -22,7 +22,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         self.n_channels = n_channels
         self.shuffle = shuffle
         self.augment = augment
-        self.on_epoch_end()
+        # self.on_epoch_end()
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -38,16 +38,17 @@ class DataGeneratorMatting(keras.utils.Sequence):
         X, y = self.__data_generation(list_IDs_temp)
         return X, y
 
-    def on_epoch_end(self):
-        'Updates indexes after each epoch'
-        self.indexes = np.arange(len(self.list_IDs))
-        if self.shuffle == True:
-            np.random.shuffle(self.indexes)
+    # def on_epoch_end(self):
+    #     'Updates indexes after each epoch'
+    #     self.indexes = np.arange(len(self.list_IDs))
+    #     if self.shuffle == True:
+    #         np.random.shuffle(self.indexes)
 
     def __get_data(self, img_path, mask_path):
         # Load img & mask
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
 
         if self.augment:
@@ -56,7 +57,11 @@ class DataGeneratorMatting(keras.utils.Sequence):
         # Resize image and mask
         h, w = self.dim
         img = cv2.resize(img, (w, h))
+        
         mask = cv2.resize(mask, (w, h))
+        # mask thresholding
+        mask = cv2.threshold(mask, 10, 255, cv2.THRESH_BINARY)[1]
+
         mask = mask[:,:,np.newaxis]
 
         # Normalize image and mask - normalize 와 Augmentation 순서 다시 고려해보자

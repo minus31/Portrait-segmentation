@@ -101,7 +101,7 @@ def matting_net(input_size, batchnorm=False, android=False):
 
     # x = Concatenate(axis=-1)([div_Fs, div_Us, div_Bs])
 
-    x = Activation('tanh')(conv6)
+    x = Activation('linear')(conv6)
     
     shortcut = x
     x = ReLU(name='re_lu_24')(x)
@@ -115,6 +115,7 @@ def matting_net(input_size, batchnorm=False, android=False):
     out = Activation('sigmoid', name='output')(x)
     
     model = Model(inputs=inputs, outputs=out)
+
     return model
 
 
