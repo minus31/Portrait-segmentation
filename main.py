@@ -29,8 +29,10 @@ def get_current_day():
 ## set random state for the comparision of Activation functions 
 from numpy.random import seed
 seed(7777)
-from tensorflow import random
-random.set_seed(7777)
+# from tensorflow import random
+from tensorflow.random import set_random_seed
+
+set_random_seed(7777)
 
 
 class SeerSegmentation():
@@ -52,11 +54,11 @@ class SeerSegmentation():
             os.mkdir(self.checkpoint_path)
         
         ##############################################  < 고쳐야함
-        if config.finetune or config.infer_single_img:
-            self.weight_dir = config.weight_dir# default=None
+        # if config.finetune or config.infer_single_img:
+        self.weight_dir = config.weight_dir# default=None
 
-        if config.convert:
-            self.weight_dir = config.weight_dir# default=None
+        # if config.convert:
+        #     self.weight_dir = config.weight_dir# default=None
         ##############################################
         self.img_paths = np.load("./dataset/selfie/img_paths.npy")
         
@@ -71,7 +73,7 @@ class SeerSegmentation():
     def train(self, finetune=False):
 
         self.model = self.build_model(batchnorm=True)
-        
+
         if finetune:
             print('load pre-trained model weights')
             self.model.load_weights(self.weight_dir, by_name=True)
@@ -134,23 +136,25 @@ class SeerSegmentation():
                                       shuffle=True)
             t2 = time.time()
             
-            print(res.history)
+            # print(res.history)
             
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
-            # step 마다 id list를 섞어서 train, Val generator를 새로 생성
-            self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
-            self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
-
-            train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
-            test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
-
+            # checkpoint마다 id list를 섞어서 train, Val generator를 새로 생성
             if epoch % self.checkpoint == 0:
+                print("shuffle the datasets")
+                self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
+                self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
+
+                train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
+                test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
+
                 self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch) + ".h5"))
+                print("Model saved with name {} ".format(epoch))
 
         print("Entire training time has been taken {} ", t2 - t0)
 
-        return 1
+        return None
 
     def infer_single_img(self, img_path):
         self.model = self.build_model(batchnorm=False)
