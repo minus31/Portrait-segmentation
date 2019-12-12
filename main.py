@@ -123,7 +123,7 @@ class SeerSegmentation():
         STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
         t0 = time.time()
 
-        for epoch in range(1, self.nb_epoch + 1):
+        for epoch in range(self.nb_epoch):
             t1 = time.time()
             res = self.model.fit_generator(generator=train_gen,
                                       validation_data=test_gen,
@@ -135,13 +135,12 @@ class SeerSegmentation():
                                       verbose=1,
                                       shuffle=True)
             t2 = time.time()
-            
-            print(res.history)
+            # print(res.history)
             
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
             # checkpoint마다 id list를 섞어서 train, Val generator를 새로 생성
-            if epoch % self.checkpoint == 0:
+            if epoch + 1 % self.checkpoint == 0:
                 print("shuffle the datasets")
                 self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
                 self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
@@ -149,8 +148,8 @@ class SeerSegmentation():
                 train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
                 test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
-                self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch) + ".h5"))
-                print("Model saved with name {} ".format(epoch))
+                self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch + 1) + ".h5"))
+                print("Model saved with name {} ".format(epoch + 1))
 
         print("Entire training time has been taken {} ", t2 - t0)
 
