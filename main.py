@@ -139,7 +139,7 @@ class SeerSegmentation():
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
             # checkpoint마다 id list를 섞어서 train, Val generator를 새로 생성
-            if epoch + 1 % self.checkpoint == 0:
+            if (epoch + 1) % self.checkpoint == 0:
                 print("shuffle the datasets")
                 self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
                 self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
