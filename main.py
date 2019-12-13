@@ -107,7 +107,7 @@ class SeerSegmentation():
         # for layer in self.model.layers[:-7]:
         #     layer.trainable = False
 
-        self.model.compile(loss=[ce_dl_combined_loss, focal_loss()],
+        self.model.compile(loss=ce_dice_focal_combined_loss,
                       optimizer=opt,
                       metrics=[iou_coef])
 
