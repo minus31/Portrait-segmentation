@@ -66,7 +66,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         mask = cv2.resize(mask, (w, h))
         # mask thresholding
 
-        mask = cv2.threshold(mask, 90, 255, cv2.THRESH_BINARY)[1]
+        mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
         mask = mask[:,:,np.newaxis]
         # Normalize image and mask - normalize 와 Augmentation 순서 다시 고려해보자
         norm_img = img / 255.0

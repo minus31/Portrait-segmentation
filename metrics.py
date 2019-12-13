@@ -23,23 +23,74 @@ import numpy as np
 #         return -K.sum(alpha * K.pow(1. -pt_1, gamma) * K.log(pt_1 + epsilon))-K.sum((1-alpha) * K.pow(pt_0, gamma) * K.log(1. - pt_0))
 #     return focal_loss_fixed
 
-def mean_iou(y_true, y_pred):
+def focal_loss(alpha=0.25, gamma=2):
+    def focal_loss_with_logits(logits, targets, alpha, gamma, y_pred):
+        weight_a = alpha * (1 - y_pred) ** gamma * targets
+        weight_b = (1 - alpha) * y_pred ** gamma * (1 - targets)
+    
+        return (tf.log1p(tf.exp(-tf.abs(logits))) + tf.nn.relu(-logits)) * (weight_a + weight_b) + logits * weight_b 
 
-    prec = []
+    def loss(y_true, y_pred):
+        y_pred = tf.clip_by_value(y_pred, tf.keras.backend.epsilon(), 1 - tf.keras.backend.epsilon())
+        logits = tf.log(y_pred / (1 - y_pred))
 
-    for t in np.arange(0.5, 1.0, 0.05):
-        
-        y_pred_ = tf.to_int32(y_pred > t)
-        score, up_opt = tf.metrics.mean_iou(y_true, y_pred_, 2)
-        K.get_session().run(tf.local_variables_initializer())
+        loss = focal_loss_with_logits(logits=logits, targets=y_true, alpha=alpha, gamma=gamma, y_pred=y_pred)
 
-        with tf.control_dependencies([up_opt]):
+        # or reduce_sum and/or axis=-1
+        return tf.reduce_mean(loss)
 
-            score = tf.identity(score)
+    return loss
 
-        prec.append(score)
+def ce_dl_combined_loss(y_true, y_pred):
+    
+    y_true = tf.cast(y_true, dtype=tf.float32)
+    y_pred = tf.cast(y_pred, dtype=tf.float32)
+    
+    def dice_loss(y_true, y_pred):
+        numerator = 2 * tf.reduce_sum(y_true * y_pred, axis=(1,2,3))
+        denominator = tf.reduce_sum(y_true + y_pred, axis=(1,2,3))
 
-    return K.mean(K.stack(prec), axis=0)
+        return tf.reshape(1 - numerator / denominator, (-1, 1, 1))
+
+    return tf.reduce_mean(keras.losses.binary_crossentropy(y_true, y_pred) + dice_loss(y_true, y_pred))
+
+# works fine --> included in combined
+def dice_loss(y_true, y_pred):
+    numerator = 2 * tf.reduce_sum(y_true * y_pred, axis=(1,2,3))
+    denominator = tf.reduce_sum(y_true + y_pred, axis=(1,2,3))
+
+    return 1 - numerator / denominator
+
+# the metric
+def iou_coef(y_true, y_pred, smooth=1):
+    
+    threshold = tf.constant(0.5)
+    
+    y_true = tf.cast(y_true > threshold, dtype=tf.float32)
+    y_pred = tf.cast(y_pred > threshold, dtype=tf.float32)
+    
+    intersection = K.sum(K.abs(y_true * y_pred), axis=[1,2,3])
+    union = K.sum(y_true,[1,2,3])+K.sum(y_pred,[1,2,3])-intersection
+    iou = K.mean((intersection + smooth) / (union + smooth), axis=0)
+    return iou
+
+# def mean_iou(y_true, y_pred):
+
+#     prec = []
+
+#     for t in np.arange(0.5, 1.0, 0.05):
+
+#         y_pred_ = tf.to_int32(y_pred > t)
+#         score, up_opt = tf.metrics.mean_iou(y_true, y_pred_, 2)
+#         K.get_session().run(tf.local_variables_initializer())
+
+#         with tf.control_dependencies([up_opt]):
+
+#             score = tf.identity(score)
+
+#         prec.append(score)
+
+#     return K.mean(K.stack(prec), axis=0)
 
 
 # def iou_coef(y_true, y_pred, smooth=1):

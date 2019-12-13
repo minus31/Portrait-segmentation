@@ -107,9 +107,9 @@ class SeerSegmentation():
         # for layer in self.model.layers[:-7]:
         #     layer.trainable = False
 
-        self.model.compile(loss="binary_crossentropy",
+        self.model.compile(loss=[ce_dl_combined_loss, focal_loss()],
                       optimizer=opt,
-                      metrics=[mean_iou, 'accuracy'])
+                      metrics=[iou_coef])
 
         """ Callback """
         monitor = 'loss'
