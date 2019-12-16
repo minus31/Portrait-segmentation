@@ -83,7 +83,7 @@ class SeerSegmentation():
 
     def train(self, finetune=False):
 
-        self.model = self.build_model(batchnorm=True)
+        self.model = self.build_model(batchnorm=False)
 
         if finetune:
             print('load pre-trained model weights')
