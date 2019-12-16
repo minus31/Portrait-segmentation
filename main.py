@@ -34,6 +34,18 @@ from tensorflow.random import set_random_seed
 
 set_random_seed(7777)
 
+def test_example(model, filename):
+
+    img = cv2.imread("./dataset/selfie/training/00694.png", cv2.IMREAD_COLOR)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = cv2.resize(img, (256,256))
+    img = img / 255.
+
+    pred = model.predict(img[np.newaxis, :, :, :])
+    cv2.imwrite(filename, pred.squeeze(0).squeeze(-1))
+    return 0
+
+
 
 class SeerSegmentation():
 
@@ -116,6 +128,7 @@ class SeerSegmentation():
         reduce_lr = ReduceLROnPlateau(monitor=monitor, patience=3)
         """Callback for Tensorboard"""
         tb = keras.callbacks.TensorBoard(log_dir="./logs/", update_freq='batch')
+        
 
         """ Training loop """
         STEP_SIZE_TRAIN = len(self.train_img_paths) // train_gen.batch_size
@@ -135,7 +148,9 @@ class SeerSegmentation():
                                       shuffle=True)
             t2 = time.time()
             # print(res.history)
-            
+
+            test_example(self.model, "./result_sample/" + str(epoch) + ".png")
+
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
             # checkpoint마다 id list를 섞어서 train, Val generator를 새로 생성
