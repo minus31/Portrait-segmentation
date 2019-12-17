@@ -12,15 +12,18 @@ aug_params = {
     "gamma_range": (0.5, 1.5)
 }
 
+
+def create_kernel(k): 
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
+    return kernel
+
 def get_edge(mask):
 
     edge = cv2.Canny(mask, 50, 100)
-
     k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 50)
-
+    kernel = create_kernel(k)
     # ksize = (k, k)
     # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
-    kernel = cv2.getStructuringElement(2, (k, k))
 
     dil = cv2.dilate(edge, kernel)
 
