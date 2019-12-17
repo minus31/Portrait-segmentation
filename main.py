@@ -83,7 +83,7 @@ class SeerSegmentation():
 
     def train(self, finetune=False):
 
-        self.model = self.build_model(batchnorm=False)
+        self.model = self.build_model()
 
         if finetune:
             print('load pre-trained model weights')
@@ -119,7 +119,8 @@ class SeerSegmentation():
         # for layer in self.model.layers[:-7]:
         #     layer.trainable = False
 
-        self.model.compile(loss={"output" : ce_dice_focal_combined_loss,
+        self.model.compile(
+                      loss={"output" : ce_dice_focal_combined_loss,
                                  "boundary_attention" : "binary_crossentropy"},
                       loss_weights=[0.7, 0.3],
                       optimizer=opt,
