@@ -86,7 +86,7 @@ def matting_net(input_size, batchnorm=False, train=True, android=False):
         conv6 = Conv2D(3, (1, 1))(conv1_inv)
     
     ### Boundary attention map 추가
-    b = Conv2D(1, (1, 1), padding='same', kernel_initializer='he_normal')(conv6)
+    b = Conv2D(1, (1, 1), padding='same', kernel_initializer='he_normal', name="boundary_conv1d")(conv6)
     ba = Activation("sigmoid", name='boundary_attention')(b)
 
     x = Activation('tanh')(conv6)
