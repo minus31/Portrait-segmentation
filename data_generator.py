@@ -12,6 +12,21 @@ aug_params = {
     "gamma_range": (0.5, 1.5)
 }
 
+def get_edge(mask):
+
+    edge = cv2.Canny(mask, 50, 100)
+
+    k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 50)
+
+    # ksize = (k, k)
+    # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
+    kernel = cv2.getStructuringElement(2, (k, k))
+
+    dil = cv2.dilate(edge, kernel)
+
+    return dil
+
+
 class DataGeneratorMatting(keras.utils.Sequence):
     'Generate data for Keras'
     def __init__(self, list_IDs, batch_size=32, dim=(256, 256), n_channels=3, shuffle=True, augment=False):
@@ -44,20 +59,6 @@ class DataGeneratorMatting(keras.utils.Sequence):
         if self.shuffle == True:
             np.random.shuffle(self.indexes)
 
-    def __get_edge(self, mask):
-
-        edge = cv2.Canny(mask, 50, 100)
-
-        k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 50)
-
-        # ksize = (k, k)
-        # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
-        kernel = cv2.getStructuringElement(2, (k, k))
-
-        dil = cv2.dilate(edge, kernel)
-        return dil
-
-
     def __get_data(self, img_path, mask_path):
         # Load img & mask
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
@@ -82,7 +83,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         
 
         # for Boundary Attention
-        dil = self.__get_edge(mask)
+        dil = get_edge(mask)
 
         # mask thresholding
         # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
