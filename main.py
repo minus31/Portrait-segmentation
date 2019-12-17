@@ -116,8 +116,8 @@ class SeerSegmentation():
         opt = keras.optimizers.adam(lr=self.lr)
 
         # Freeze Trimap network
-        # for layer in self.model.layers[:-7]:
-        #     layer.trainable = False
+        for layer in self.model.layers[:-7]:
+            layer.trainable = False
 
         self.model.compile(loss=ce_dice_focal_combined_loss,
                       optimizer=opt,
@@ -128,7 +128,11 @@ class SeerSegmentation():
         reduce_lr = ReduceLROnPlateau(monitor=monitor, patience=3)
         """Callback for Tensorboard"""
         tb = keras.callbacks.TensorBoard(log_dir="./logs/", update_freq='batch')
-        
+        """Callback for save Checkpoints"""
+        mc = keras.callbacks.ModelCheckpoint(os.path.join(self.checkpoint_path, '{epoch:02d}-{val_loss:.2f}.h5'), 
+                                                verbose=1, 
+                                                monitor='val_loss',
+                                                save_weights_only=True)
 
         """ Training loop """
         STEP_SIZE_TRAIN = len(self.train_img_paths) // train_gen.batch_size
@@ -143,7 +147,7 @@ class SeerSegmentation():
                                       validation_steps = STEP_SIZE_VAL,
                                       initial_epoch=epoch,
                                       epochs=epoch + 1,
-                                      callbacks=[reduce_lr, tb],
+                                      callbacks=[reduce_lr, tb, mc],
                                       verbose=1,
                                       shuffle=True)
             t2 = time.time()
@@ -162,8 +166,8 @@ class SeerSegmentation():
                 train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
                 test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
-                self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch + 1) + ".h5"))
-                print("Model saved with name {} ".format(epoch + 1))
+                # self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch + 1) + ".h5"))
+                # print("Model saved with name {} ".format(epoch + 1))
 
         print("Entire training time has been taken {} ", t2 - t0)
 
