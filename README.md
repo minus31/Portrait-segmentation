@@ -8,7 +8,7 @@
 
 * Fine-Tuning
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.000045 --val_ratio=0.8 --checkpoint=50 --checkpoint_path='./trained_models' --weight_dir="./trained_models/initial.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=50 --checkpoint_path='./trained_models/full_net/' --weight_dir="./trained_models/initial.h5" --train=True --finetune=True --convert=False --android=False`
 
 - lsSingle image inference 
 
@@ -190,6 +190,16 @@ $$
 [4 *dataset] Farshid Farhat et al. Intelligent Portrait Composition Assistance. http://personal.psu.edu/fuf111/publications/intelligent-portrait-composition-assistance-deep-learning-image-retrieval.pdf
 
 [5] Song-Hai Zhang et al. PortraitNet: Real-time Portrait Segmentation Network for Mobile Device. http://www.yongliangyang.net/docs/mobilePotrait_c&g19.pdf
+
+
+
+https://arxiv.org/pdf/1901.03814.pdf
+
+<img src="https://www.dropbox.com/s/l5u1lfn5qu6ddto/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202019-12-17%2016.59.52.png?dl=1">
+
+1. Semantic extraction  : just encoder decoder (replace it with the present model)
+2. For Boundary loss  : Binary cross entropy : target - Canny(마스크에서 엣지를 따는 것), multiple tickness of the boundary, 
+3. 
 
 ----
 

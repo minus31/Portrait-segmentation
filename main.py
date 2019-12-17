@@ -42,7 +42,7 @@ def test_example(model, filename):
     img = img / 255.
 
     pred = model.predict(img[np.newaxis, :, :, :])
-    cv2.imwrite(filename, pred.squeeze(0).squeeze(-1))
+    cv2.imwrite(filename, pred[0].squeeze(0).squeeze(-1))
     return 0
 
 
@@ -73,9 +73,9 @@ class SeerSegmentation():
         ##############################################
         self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
         
-    def build_model(self, batchnorm=False):
+    def build_model(self, batchnorm=False, train=True):
 
-        return matting_net(input_size=self.input_shape, batchnorm=batchnorm, android=False)
+        return matting_net(input_size=self.input_shape, batchnorm=batchnorm, android=False, train=train)
 
     def build_model_forAndroid(self, batchnorm=False):
 
@@ -119,9 +119,11 @@ class SeerSegmentation():
         # for layer in self.model.layers[:-7]:
         #     layer.trainable = False
 
-        self.model.compile(loss=ce_dice_focal_combined_loss,
+        self.model.compile(loss={"output" : ce_dice_focal_combined_loss,
+                                 "boundary_attention" : "binary_crossentropy"},
+                      loss_weights=[0.7, 0.3],
                       optimizer=opt,
-                      metrics=[iou_coef, 'accuracy'])
+                      metrics={"output" : [iou_coef, 'accuracy']})
 
         """ Callback """
         monitor = 'loss'
@@ -153,12 +155,11 @@ class SeerSegmentation():
             t2 = time.time()
             # print(res.history)
 
-            test_example(self.model, "./result_sample/" + str(epoch) + ".png")
-
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
             # checkpoint마다 id list를 섞어서 train, Val generator를 새로 생성
             if (epoch + 1) % self.checkpoint == 0:
+                test_example(self.model, "./result_sample/" + str(epoch) + ".png")
                 print("shuffle the datasets")
                 self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
                 self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
@@ -173,45 +174,45 @@ class SeerSegmentation():
 
         return None
 
-    def infer_single_img(self, img_path):
+    # def infer_single_img(self, img_path):
 
-        self.model = self.build_model(batchnorm=False)
+    #     self.model = self.build_model(batchnorm=False, train=False)
 
-        self.model.load_weights(self.weight_dir, by_name=True)
+    #     self.model.load_weights(self.weight_dir, by_name=True)
 
-        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        print(img.shape)
-        resize_img = cv2.resize(img, self.input_shape[:2][::-1])[np.newaxis,:,:,::-1]
-        norm_img = resize_img / 255.0
-        print(norm_img.shape)
-        pred = self.model.predict(norm_img) * 255.0
-        print(pred.shape)
-        pred_modified = pred.squeeze(0).squeeze(-1)
-        cv2.imwrite("./" + "test"  + img_path.split("/")[-1].split(".")[0] + ".png", pred_modified)
+    #     img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+    #     print(img.shape)
+    #     resize_img = cv2.resize(img, self.input_shape[:2][::-1])[np.newaxis,:,:,::-1]
+    #     norm_img = resize_img / 255.0
+    #     print(norm_img.shape)
+    #     pred = self.model.predict(norm_img) * 255.0
+    #     print(pred.shape)
+    #     pred_modified = pred.squeeze(0).squeeze(-1)
+    #     cv2.imwrite("./" + "test"  + img_path.split("/")[-1].split(".")[0] + ".png", pred_modified)
 
-        return pred
+    #     return pred
 
-    def convert_tflite(self, tflite_name, android=False):
-        if android : 
-            self.model = self.build_model_forAndroid(batchnorm=False)
-        else : 
-            self.model = self.build_model(batchnorm=False)
+    # def convert_tflite(self, tflite_name, android=False):
+    #     if android : 
+    #         self.model = self.build_model_forAndroid(batchnorm=False)
+    #     else : 
+    #         self.model = self.build_model(batchnorm=False)
 
 
-        # self.model.load_weights(self.weight_dir)
+    #     # self.model.load_weights(self.weight_dir)
 
-        input_names = [node.op.name for node in self.model.inputs]
-        output_names = [node.op.name for node in self.model.outputs]
+    #     input_names = [node.op.name for node in self.model.inputs]
+    #     output_names = [node.op.name for node in self.model.outputs]
 
-        print(input_names)
-        print(output_names)
+    #     print(input_names)
+    #     print(output_names)
 
-        sess = K.get_session()
-        converter = tf.lite.TFLiteConverter.from_session(sess, self.model.inputs, self.model.outputs)
+    #     sess = K.get_session()
+    #     converter = tf.lite.TFLiteConverter.from_session(sess, self.model.inputs, self.model.outputs)
 
-        tflite_model = converter.convert()
-        open(tflite_name, "wb").write(tflite_model)
-        return None
+    #     tflite_model = converter.convert()
+    #     open(tflite_name, "wb").write(tflite_model)
+    #     return None
 
 
 

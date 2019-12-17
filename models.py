@@ -9,7 +9,7 @@ from keras import backend as K
 import tensorflow as tf
 
 
-def matting_net(input_size, batchnorm=False, android=False):
+def matting_net(input_size, batchnorm=False, train=True, android=False):
     ###########
     # Encoder #
     ###########
@@ -84,25 +84,33 @@ def matting_net(input_size, batchnorm=False, android=False):
         conv6 = Conv2D(3, (1, 1))(conv6)
     else:
         conv6 = Conv2D(3, (1, 1))(conv1_inv)
+    
+    ### Boundary attention map 추가
+    b = Conv2D(1, (1, 1), padding='same', kernel_initializer='he_normal')(conv6)
+    ba = Activation("sigmoid", name='boundary_attention')(b)
 
     x = Activation('tanh')(conv6)
     
     shortcut = x
+    # Concatenating
+    x = Concatenate(axis=-1)([x, ba])
+    
     x = ReLU(name='re_lu_24')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_47')(x)
     x = Activation('relu', name='activation_27')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48')(x)
     x = Add(name='add_28')([shortcut, x])
-
     x = Conv2D(1, (1, 1), name='conv2d_7')(x)
-
     out = Activation('sigmoid', name='output')(x)
     
-    model = Model(inputs=inputs, outputs=out)
+    if train:
+        
+        model = Model(inputs=inputs, outputs=[out, ba])
+        
+    if test :
+        model = Model(inputs=inputs, outputs=out)
 
     return model
-
-
 
 def residual_block(x, filters, kernel_size=(3, 3), batchnorm=False):
     shortcut = x
