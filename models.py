@@ -96,7 +96,7 @@ def matting_net(input_size, batchnorm=False, train=True, android=False):
     x = Concatenate(axis=-1)([x, ba])
     
     x = ReLU(name='re_lu_24')(x)
-    x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_47')(x)
+    x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_47_')(x)
     x = Activation('relu', name='activation_27')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48')(x)
     x = Add(name='add_28')([shortcut, x])
