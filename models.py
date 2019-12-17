@@ -84,24 +84,8 @@ def matting_net(input_size, batchnorm=False, android=False):
         conv6 = Conv2D(3, (1, 1))(conv6)
     else:
         conv6 = Conv2D(3, (1, 1))(conv1_inv)
-    
-    # Fs = Lambda(lambda x: x[:, :, :, 0:1])(conv6)
-    # Us = Lambda(lambda x: x[:, :, :, 1:2])(conv6)
-    # Bs = Lambda(lambda x: x[:, :, :, 2:])(conv6)
-    
-    # Fs = Lambda(lambda x : K.exp(x))(Fs)
-    # Us = Lambda(lambda x : K.exp(x))(Us)
-    # Bs = Lambda(lambda x : K.exp(x))(Bs)
 
-    # s_exp = Add(name="add_exps")([Fs, Us, Bs])
-
-    # div_Fs = Lambda(lambda x : x[0] / x[1])([Fs, s_exp])
-    # div_Us = Lambda(lambda x : x[0] / x[1])([Us, s_exp])
-    # div_Bs = Lambda(lambda x : x[0] / x[1])([Bs, s_exp])
-
-    # x = Concatenate(axis=-1)([div_Fs, div_Us, div_Bs])
-
-    x = Activation('sigmoid')(conv6)
+    x = Activation('tanh')(conv6)
     
     shortcut = x
     x = ReLU(name='re_lu_24')(x)
@@ -109,13 +93,6 @@ def matting_net(input_size, batchnorm=False, android=False):
     x = Activation('relu', name='activation_27')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48')(x)
     x = Add(name='add_28')([shortcut, x])
-
-    shortcut = x
-    x = ReLU(name='re_lu_25')(x)
-    x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_49')(x)
-    x = Activation('relu', name='activation_28')(x)
-    x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_50')(x)
-    x = Add(name='add_29')([shortcut, x])
 
     x = Conv2D(1, (1, 1), name='conv2d_7')(x)
 
