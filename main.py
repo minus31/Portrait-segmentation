@@ -52,6 +52,7 @@ class SeerSegmentation():
     def __init__(self, config):
         k = 21
         kernel = cv2.getStructuringElement(2, (k, k))
+        print(kernel)
         self.input_shape = (config.input_shape, config.input_shape, 3)
         
         if config.train:
