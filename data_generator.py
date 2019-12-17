@@ -11,19 +11,14 @@ aug_params = {
     "scale_range": (0.6, 1.5),
     "gamma_range": (0.5, 1.5)
 }
-
-
-def create_kernel(k): 
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
-    return kernel
-
 def get_edge(mask):
 
     edge = cv2.Canny(mask, 50, 100)
     k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 50)
-    kernel = create_kernel(k)
-    # ksize = (k, k)
+    # kernel = create_kernel(k)
+    ksize = (k, k)
     # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
+    kernel = np.ones(ksize, np.uint8)
 
     dil = cv2.dilate(edge, kernel)
 
@@ -32,8 +27,7 @@ def get_edge(mask):
 
 class DataGeneratorMatting(keras.utils.Sequence):
     'Generate data for Keras'
-    import cv2
-    
+
     def __init__(self, list_IDs, batch_size=32, dim=(256, 256), n_channels=3, shuffle=True, augment=False):
         'Initialization'
         self.dim = dim
