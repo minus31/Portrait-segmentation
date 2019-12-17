@@ -73,8 +73,8 @@ class DataGeneratorMatting(keras.utils.Sequence):
         k = np.int((mask[mask > 50].shape[0] / (w * h)) * 50)
         ksize = (k, k)
         # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
-        kernel = cv2.getStructuringElement(2, k, k)
-        kernel = np.ones(ksize, np.uint8)
+        kernel = cv2.getStructuringElement(2, (k, k))
+        # kernel = np.ones(ksize, np.uint8)
 
         dil = cv2.dilate(edge, kernel)
 
