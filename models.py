@@ -100,7 +100,7 @@ def matting_net(input_size, batchnorm=False, train=True, android=False):
     x = Activation('relu', name='activation_27')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48')(x)
     x = Add(name='add_28')([shortcut, x])
-    x = Conv2D(1, (1, 1), name='conv2d_8')(x)
+    x = Conv2D(1, (1, 1), name='conv2d_7')(x)
     out = Activation('sigmoid', name='output')(x)
     
     if train:
