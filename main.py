@@ -50,7 +50,7 @@ def test_example(model, filename):
 class SeerSegmentation():
 
     def __init__(self, config):
-        
+        k = 21
         kernel = cv2.getStructuringElement(2, (k, k))
         self.input_shape = (config.input_shape, config.input_shape, 3)
         
