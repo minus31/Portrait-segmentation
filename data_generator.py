@@ -44,6 +44,20 @@ class DataGeneratorMatting(keras.utils.Sequence):
         if self.shuffle == True:
             np.random.shuffle(self.indexes)
 
+    def __get_edge(self, mask):
+
+        edge = cv2.Canny(mask, 50, 100)
+
+        k = np.int((mask[mask > 50].shape[0] / (w * h)) * 50)
+
+        # ksize = (k, k)
+        # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
+        kernel = cv2.getStructuringElement(2, (k, k))
+
+        dil = cv2.dilate(edge, kernel)
+        return dil
+
+
     def __get_data(self, img_path, mask_path):
         # Load img & mask
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
@@ -68,16 +82,8 @@ class DataGeneratorMatting(keras.utils.Sequence):
         
 
         # for Boundary Attention
-        edge = cv2.Canny(mask, 50, 100)
+        dil = self.__get_edge(mask)
         
-        k = np.int((mask[mask > 50].shape[0] / (w * h)) * 50)
-        ksize = (k, k)
-        # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
-        kernel = cv2.getStructuringElement(2, (k, k))
-        # kernel = np.ones(ksize, np.uint8)
-
-        dil = cv2.dilate(edge, kernel)
-
         # mask thresholding
         # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
         mask = mask[:,:,np.newaxis]
