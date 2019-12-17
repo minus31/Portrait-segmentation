@@ -107,7 +107,7 @@ def matting_net(input_size, batchnorm=False, train=True, android=False):
         
         model = Model(inputs=inputs, outputs=[out, ba])
         
-    if test :
+    else :
         model = Model(inputs=inputs, outputs=out)
 
     return model
