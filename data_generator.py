@@ -32,6 +32,8 @@ def get_edge(mask):
 
 class DataGeneratorMatting(keras.utils.Sequence):
     'Generate data for Keras'
+    import cv2
+    
     def __init__(self, list_IDs, batch_size=32, dim=(256, 256), n_channels=3, shuffle=True, augment=False):
         'Initialization'
         self.dim = dim
