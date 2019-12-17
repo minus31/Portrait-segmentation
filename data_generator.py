@@ -50,13 +50,6 @@ class DataGeneratorMatting(keras.utils.Sequence):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-        
-        # for Boundary Attention
-        edge = cv2.Canny(mask, 50, 100)
-        k = np.int((mask[mask > 100].shape[0] / (mask.shape[0] * mask.shape[1])) * 50)
-        ksize = (k, k)
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
-        dil = cv2.dilate(edge, kernel)
 
         if "Supervisely" in mask_path:
             mask = mask * 255
@@ -72,6 +65,14 @@ class DataGeneratorMatting(keras.utils.Sequence):
         h, w = self.dim
         img = cv2.resize(img, (w, h))
         mask = cv2.resize(mask, (w, h))
+
+        # for Boundary Attention
+        edge = cv2.Canny(mask, 50, 100)
+        k = np.int((mask[mask > 100].shape[0] / (mask.shape[0] * mask.shape[1])) * 50)
+        ksize = (k, k)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
+        dil = cv2.dilate(edge, kernel)
+        
         # mask thresholding
         # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
         mask = mask[:,:,np.newaxis]
