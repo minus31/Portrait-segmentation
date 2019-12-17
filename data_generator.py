@@ -69,9 +69,13 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
         # for Boundary Attention
         edge = cv2.Canny(mask, 50, 100)
+        
         k = np.int((mask[mask > 50].shape[0] / (w * h)) * 50)
         ksize = (k, k)
+        
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
+        kernel = np.ones(ksize, np.uint8)
+
         dil = cv2.dilate(edge, kernel)
 
         # mask thresholding
