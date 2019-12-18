@@ -191,15 +191,16 @@ $$
 
 [5] Song-Hai Zhang et al. PortraitNet: Real-time Portrait Segmentation Network for Mobile Device. http://www.yongliangyang.net/docs/mobilePotrait_c&g19.pdf
 
-
-
-https://arxiv.org/pdf/1901.03814.pdf
+[6] Xi Chen et al. Boundary-Aware Network for Fast and High-Accuracy Portrait Segmentation. https://arxiv.org/pdf/1901.03814.pdf
 
 <img src="https://www.dropbox.com/s/l5u1lfn5qu6ddto/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202019-12-17%2016.59.52.png?dl=1">
 
 1. Semantic extraction  : just encoder decoder (replace it with the present model)
 2. For Boundary loss  : Binary cross entropy : target - Canny(마스크에서 엣지를 따는 것), multiple tickness of the boundary, 
-3. 
+
+
+
+[7] Qifeng Chen, Dingzeyu Li, Chi-Keung Tang. KNN matting*. http://dingzeyu.li/files/knn-matting-cvpr2012.pdf
 
 ----
 

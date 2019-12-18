@@ -77,36 +77,30 @@ def matting_net(input_size, batchnorm=False, train=True, android=False):
     conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3), batchnorm=batchnorm)
     conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3), batchnorm=batchnorm)
     conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3), batchnorm=batchnorm)
-    
-    ### last sigmoid function
-    if input_size[0] == 128:
-        conv6 = Conv2DTranspose(3, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv1_inv)
-        conv6 = Conv2D(3, (1, 1))(conv6)
-    else:
-        conv6 = Conv2D(3, (1, 1))(conv1_inv)
-    
-    ### Boundary attention map 추가
-    b = Conv2D(1, (1, 1), padding='same', kernel_initializer='he_normal', name="boundary_conv1d")(conv6)
-    ba = Activation("sigmoid", name='boundary_attention')(b)
 
+    ### Boundary attention map 추가
+    b = Conv2D(1, (1, 1), padding='same', kernel_initializer='he_normal', name="boundary_conv1d_")(conv1_inv)
+    ba = Activation("sigmoid", name='boundary_attention')(b)
+    
+    conv6 = Conv2D(3, (1, 1))(conv1_inv)
     x = Activation('tanh')(conv6)
     
-    shortcut = x
     # Concatenating
     x = Concatenate(axis=-1)([x, ba])
+
+    shortcut = x
     
     x = ReLU(name='re_lu_24')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_47_')(x)
     x = Activation('relu', name='activation_27')(x)
-    x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48')(x)
+    x = SeparableConv2D(4, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48_')(x)
     x = Add(name='add_28')([shortcut, x])
-    x = Conv2D(1, (1, 1), name='conv2d_7')(x)
+    x = Conv2D(1, (1, 1), name='conv2d_7_')(x)
     out = Activation('sigmoid', name='output')(x)
     
     if train:
-        
         model = Model(inputs=inputs, outputs=[out, ba])
-        
+
     else :
         model = Model(inputs=inputs, outputs=out)
 
