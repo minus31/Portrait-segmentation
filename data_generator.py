@@ -15,13 +15,10 @@ def get_edge(mask):
 
     edge = cv2.Canny(mask, 50, 100)
     k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 50)
-    # kernel = create_kernel(k)
     if k < 2:
         k = 2
     ksize = (k, k)
-    print(ksize)
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
-    # kernel = np.ones(ksize, np.uint8)
 
     dil = cv2.dilate(edge, kernel)
 
