@@ -8,11 +8,11 @@
 
 * Fine-Tuning
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=50 --checkpoint_path='./trained_models/finer_k15_dataset/' --weight_dir="./trained_models/finer_dataset/20191219/25-0.13.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.000045 --val_ratio=0.8 --checkpoint=50 --checkpoint_path='./trained_models/strongmodel/' --weight_dir="./trained_models/portrait_dataset/20191219/73-0.08.h5" --train=True --finetune=True --convert=False --android=False`
 
 - lsSingle image inference 
 
-`python main.py --input_shape=256 --nb_epoch=1 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./trained_models/20191212/10.h5" --img_path="./dataset/selfie/training/00694.png" --infer_single_img=True`
+`python main.py --input_shape=256 --nb_epoch=1 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./trained_models/20191212/.h5" --img_path="./dataset/selfie/training/00694.png" --infer_single_img=True`
 
 ---
 
