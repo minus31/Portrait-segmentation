@@ -71,7 +71,7 @@ class SeerSegmentation():
         # if config.convert:
         #     self.weight_dir = config.weight_dir# default=None
         ##############################################
-        self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject.npy")
+        self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15.npy")
         
     def build_model(self, batchnorm=False, train=True):
 

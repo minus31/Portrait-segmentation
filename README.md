@@ -8,7 +8,7 @@
 
 * Fine-Tuning
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=50 --checkpoint_path='./trained_models/finer_dataset/' --weight_dir="./trained_models/full_net/20191218/172-0.11.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=50 --checkpoint_path='./trained_models/finer_model/' --weight_dir="./trained_models/full_net/20191218/172-0.11.h5" --train=True --finetune=True --convert=False --android=False`
 
 - lsSingle image inference 
 
