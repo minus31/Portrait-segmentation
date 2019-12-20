@@ -44,6 +44,8 @@ portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h
 
 -> initial.h5
 
+./trained_models/Strongmodels/02-0.09.h5 : k >= 7  인 이미지에 대해서 학습 시키고 Focal loss의 비중을 0.8 두어서 학습하는 val_iou = 0.9289
+
 ----
 
 ### 초기 모델 성능 
