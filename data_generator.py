@@ -28,7 +28,7 @@ def get_edge(mask):
 class DataGeneratorMatting(keras.utils.Sequence):
     'Generate data for Keras'
 
-    def __init__(self, list_IDs, batch_size=32, dim=(256, 256), n_channels=3, shuffle=True, augment=False):
+    def __init__(self, list_IDs, batch_size=32, dim=(256, 256), n_channels=3, shuffle=True, augment=False, train=True):
         'Initialization'
         self.dim = dim
         self.batch_size = batch_size
@@ -37,6 +37,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         self.shuffle = shuffle
         self.augment = augment
         self.on_epoch_end()
+        self.train = train
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -95,7 +96,10 @@ class DataGeneratorMatting(keras.utils.Sequence):
         norm_mask = mask / 255.0
         norm_dil = dil / 255.0
 
-        return norm_img, norm_mask, norm_dil
+        if self.train:
+            return norm_img, norm_mask, norm_dil
+        else :
+            return norm_img, norm_mask
 
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples'
@@ -112,7 +116,12 @@ class DataGeneratorMatting(keras.utils.Sequence):
             if 'Supervisely' in mask_ID:
                 mask_ID = mask_ID.replace("/img/", "/masks_machine/")
                 mask_ID = mask_ID.replace(".jpeg", "")
-            
-            X[idx], y[idx], b[idx] = self.__get_data(img_path=ID, 
+
+            if self.train:
+                X[idx], y[idx], b[idx] = self.__get_data(img_path=ID, 
                                                mask_path=mask_ID)
-        return X, [y, b]
+                return X, [y, b]
+            else : 
+                X[idx], y[idx] = self.__get_data(img_path=ID, 
+                                               mask_path=mask_ID)
+                return X, y

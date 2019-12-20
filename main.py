@@ -71,7 +71,7 @@ class SeerSegmentation():
         # if config.convert:
         #     self.weight_dir = config.weight_dir# default=None
         ##############################################
-        self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject.npy")
+        self.img_paths = np.load("./dataset/img_paths.npy")
         
     def build_model(self, batchnorm=False, train=True):
 
@@ -95,6 +95,7 @@ class SeerSegmentation():
             'n_channels': self.input_shape[-1],
             'shuffle': True,
             'augment': True,
+            'train':True,
         }
 
         test_params = {
@@ -103,6 +104,7 @@ class SeerSegmentation():
             'n_channels': self.input_shape[-1],
             'shuffle': True,
             'augment': False,
+            'train':False,
         }
         
         img_paths = self.img_paths
