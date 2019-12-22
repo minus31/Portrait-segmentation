@@ -114,7 +114,6 @@ class DataGeneratorMatting(keras.utils.Sequence):
                 mask_ID = mask_ID.replace("/img/", "/masks_machine/")
                 mask_ID = mask_ID.replace(".jpeg", "")
 
-            if self.train:
-                X[idx], y[idx], b[idx] = self.__get_data(img_path=ID, 
+            X[idx], y[idx], b[idx] = self.__get_data(img_path=ID, 
                                                mask_path=mask_ID)             
         return X, [y, b]
