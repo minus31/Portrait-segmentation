@@ -96,10 +96,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         norm_mask = mask / 255.0
         norm_dil = dil / 255.0
 
-        if self.train:
-            return norm_img, norm_mask, norm_dil
-        else :
-            return norm_img, norm_mask
+        return norm_img, norm_mask, norm_dil
 
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples'
@@ -119,9 +116,5 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
             if self.train:
                 X[idx], y[idx], b[idx] = self.__get_data(img_path=ID, 
-                                               mask_path=mask_ID)
-                return X, [y, b]
-            else : 
-                X[idx], y[idx] = self.__get_data(img_path=ID, 
-                                               mask_path=mask_ID)
-                return X, y
+                                               mask_path=mask_ID)             
+        return X, [y, b]
