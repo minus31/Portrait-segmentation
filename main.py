@@ -73,9 +73,12 @@ class SeerSegmentation():
         ##############################################
         self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
         
-    def build_model(self, batchnorm=False, train=True):
+    # def build_model(self, train=True):
 
-        return matting_net(input_size=self.input_shape, android=False, train=train)
+    #     return matting_net(input_size=self.input_shape, android=False, train=train)
+    def build_model(self, train=True):
+
+            return light_matting_net(input_size=self.input_shape, android=False, train=train)
 
     def train(self, finetune=False):
 
