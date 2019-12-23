@@ -88,7 +88,7 @@ class SeerSegmentation():
 
         if self.finetune:
             print('load pre-trained model weights')
-            self.model.load_weights(self.weight_dir, by_name=True)
+            # self.model.load_weights(self.weight_dir, by_name=True)
 
         train_params = {
             'dim': self.input_shape[:2],
