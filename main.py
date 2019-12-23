@@ -58,7 +58,7 @@ class SeerSegmentation():
             self.nb_epoch = config.nb_epoch
             self.lr = config.lr
 
-        self.finetune = config.finetune
+        self.finetune = bool(config.finetune)
             
         self.val_ratio = config.val_ratio# default=0.8
         self.checkpoint = config.checkpoint # default=100
@@ -247,7 +247,7 @@ if __name__ == '__main__':
     seerSeg = SeerSegmentation(config)
 
     if config.train:
-        seerSeg.train(finetune=config.finetune)
+        seerSeg.train()
 
     if config.infer_single_img:
         pred = seerSeg.infer_single_img(config.img_path)
