@@ -46,15 +46,15 @@ portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h
 
 ./trained_models/Strongmodels/02-0.09.h5 : k >= 7  인 이미지에 대해서 학습 시키고 Focal loss의 비중을 0.8 두어서 학습하는 val_iou = 0.9289
 
-
-
 ./trained_models/Strongmodels/25-0.09.h5 : k >= 7인 이미지에 대해 Focal loss의 비중을 0.8 두어 학습 25epoch버전 val_iou = 못 적음...  
-
-
 
 ./trained_models/Strongmodels/27-0.04.h5 : k >= 7인 이미지에 대해 Focal loss의 비중을 0.8 두고 combined loss 와 Boundary loss를 0.9 : 0.1로 학습 27epoch버전 val_iou = 0.9256
 
+./trained_models/Strongmodels/332-0.03.h5 : PFCN+ dataset 에 대해서만 Focal 0.8 나머지 0.2  boundary 0.1 나머지 0.9의 비율의 Loss로 학습 332 epochs val-iou = 0.9796  
 
+./trained_models/Strongmodels/455-0.03.h5 : PFCN+ dataset 에 대해서만 Focal 0.8 나머지 0.2  boundary 0.1 나머지 0.9의 비율의 Loss로 학습 455 epochs val-iou = 0.9810 
+
+ ./trained_models/Strongmodels/513-0.03.h5 : PFCN+ dataset 에 대해서만 Focal 0.8 나머지 0.2  boundary 0.1 나머지 0.9의 비율의 Loss로 학습 513 epochs val-iou = 0.9820
 
 
 
@@ -71,6 +71,16 @@ portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h
 `tensorboard --logdir=./logs --port=8080`
 
 
+
+#### PFCN+ DATASET problems
+
+- wrong foreground
+
+![](https://www.dropbox.com/s/6i3txpri9dtjm78/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202019-12-23%2014.54.53.png?dl=1)
+
+* hand eliminated
+
+![00153](https://www.dropbox.com/s/6uaba9agxzaow8s/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202019-12-23%2014.52.34.png?dl=1)
 
 #### Applied Augmentation list 
 
@@ -184,10 +194,10 @@ $$
 - Segmentation_models : https://github.com/qubvel/segmentation_models
 - Awesome Semantic Segmentation : https://github.com/mrgloom/awesome-semantic-segmentation
 - Semantic Segmentation 첫걸음 : [https://medium.com/hyunjulie/1%ED%8E%B8-semantic-segmentation-%EC%B2%AB%EA%B1%B8%EC%9D%8C-4180367ec9cb](https://medium.com/hyunjulie/1편-semantic-segmentation-첫걸음-4180367ec9cb)
-
 - Fast Portraits Segmentation : https://github.com/lizhengwei1992/Fast_Portrait_Segmentation
 - Portrait Matting : https://github.com/takiyu/portrait_matting/
 - Semantic Human Matting : https://github.com/lizhengwei1992/Semantic_Human_Matting
+- Portrait-Segmention : https://github.com/anilsathyan7/Portrait-Segmentation
 
 ###### • Tensorflow lite
 
