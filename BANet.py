@@ -1,13 +1,14 @@
 import tensorflow as tf 
 import numpy as np 
 
-def residual_block(x, filters, kernel_size=(3, 3)):
+
+def residual_block(x, filters=64, kernel_size=(3, 3)):
     shortcut = x
-    x = ReLU()(x)
-    x = SeparableConv2D(filters / 2, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
-    x = Activation('relu')(x)
-    x = SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
-    x = add([shortcut, x])
+    x = tf.keras.layers.SeparableConv2D(filters / 2, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
+    x = tf.keras.layers.Activation("relu")(x)
+    x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
+    x = tf.keras.layers.Activation("relu")(x)
+    x = tf.keras.layers.Add()([shortcut, x])
     return x
 
 def BAnet(input_size, train=True, android=False):
@@ -15,84 +16,78 @@ def BAnet(input_size, train=True, android=False):
     # Encoder #
     ###########
     ## 1st line
-    if android:
-        inputs = Input(input_size)
-        # for android 
-        inputs_s = Lambda(lambda x: x[:, :, :, :3])(inputs)
-        conv1 = Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs_s)
-    else:
-        inputs = Input(input_size)
-        conv1 = Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs)
     
+    # input shape -> 1/2
+    if android:
+        inputs = tf.keras.layers.Input(shape=input_size)
+        # for android 
+        inputs_s = tf.keras.layers.Lambda(lambda x: x[:, :, :, :3])(inputs)
+        conv1 = tf.keras.layers.Conv2D(8, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(inputs_s)
+    else:
+        inputs = tf.keras.layers.Input(shape=input_size)
+        conv1 = tf.keras.layers.Conv2D(8, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(inputs)
+    
+    # 1/2 -> 1/4
+    conv1 = tf.keras.layers.Conv2D(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv1)
+    conv1 = residual_block(conv1, filters=64, kernel_size=(3, 3))
 
-    conv1 = residual_block(conv1, filters=8, kernel_size=(3, 3))
+    ## 2nd line 1/4 -> 1/8
+    conv2 = tf.keras.layers.Conv2D(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv1)
+    conv2 = residual_block(conv2, filters=64, kernel_size=(3, 3))
 
-    ## 2nd line
-    conv2 = Conv2D(32, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv1)
-    conv2 = residual_block(conv2, filters=32, kernel_size=(3, 3))
-
-    ## 3rd line
-    conv3 = Conv2D(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv2)
+    ## 3rd line 1/8 -> 1/16
+    conv3 = tf.keras.layers.Conv2D(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv2)
     conv3 = residual_block(conv3, filters=64, kernel_size=(3, 3))
 
-    ## 4th line
-    conv4 = Conv2D(128, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv3)
-    conv4 = residual_block(conv4, filters=128, kernel_size=(3, 3))
-    conv4 = residual_block(conv4, filters=128, kernel_size=(3, 3))
-
-    ## 5th line
-    conv5 = Conv2D(128, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv4)
-    conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
-    conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
-    conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
-    conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
-    conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
-    conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
+    ## 4th line 1/16 -> 1/32
+    conv4 = tf.keras.layers.Conv2D(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv3)
+    conv4 = residual_block(conv4, filters=64, kernel_size=(3, 3))
 
     ###########
     # Decoder #
     ###########
+    
+    # 1/32 -> 1/16
     ## 4th-inverse line
-    conv4_inv = Conv2DTranspose(128, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv5)
-    conv4_inv = add([conv4, conv4_inv])
-    conv4_inv = residual_block(conv4_inv, filters=128, kernel_size=(3, 3))
-    conv4_inv = residual_block(conv4_inv, filters=128, kernel_size=(3, 3))
-    conv4_inv = residual_block(conv4_inv, filters=128, kernel_size=(3, 3))
+    conv3_inv = tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv4)
+    conv3_inv = tf.keras.layers.Add()([conv3, conv3_inv])
+    conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
 
+    # 1/16 -> 1/8
     ## 3rd-inverse line
-    conv3_inv = Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv4_inv)
-    conv3_inv = add([conv3, conv3_inv])
-    conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
-    conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
-    conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
+    conv2_inv = tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv4_inv)
+    conv2_inv = tf.keras.layers.Add()([conv2, conv2_inv])
+    conv2_inv = residual_block(conv2_inv, filters=64, kernel_size=(3, 3))
 
+    # 1/8 -> 1/4
     ## 2nd-inverse line
-    conv2_inv = Conv2DTranspose(32, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv3_inv)
-    conv2_inv = add([conv2, conv2_inv])
-    conv2_inv = residual_block(conv2_inv, filters=32, kernel_size=(3, 3))
-    conv2_inv = residual_block(conv2_inv, filters=32, kernel_size=(3, 3))
-    conv2_inv = residual_block(conv2_inv, filters=32, kernel_size=(3, 3))
-
-    ## 1st-inverse line
-    conv1_inv = Conv2DTranspose(8, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv2_inv)
-    conv1_inv = add([conv1, conv1_inv])
-    conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3))
-    conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3))
-    conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3))
-
-    ### Boundary attention map 추가
-    b = Conv2D(1, (1, 1), padding='same', kernel_initializer='he_normal', name="boundary_conv1d_")(conv1_inv)
-    ba = Activation("sigmoid", name='boundary_attention')(b)
+    conv1_inv = tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv3_inv)
+    conv1_inv = tf.keras.layers.Add()([conv1, conv1_inv])
+    conv1_inv = residual_block(conv1_inv, filters=64, kernel_size=(3, 3))
     
-    conv6 = Conv2D(3, (1, 1))(conv1_inv)
-    x = Activation('tanh')(conv6)
     
-    # Concatenating
-    x = Concatenate(axis=-1)([x, ba])
+    ### for boundary mapping 
+    # prejection to 1 channel
+    ba_projection = tf.keras.layers.Conv2D(1, (1, 1), padding='same', kernel_initializer='he_normal')(conv1_inv)
+    # Upsample to input size
+    ba_comparison = tf.keras.layers.Conv2DTranspose(1, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(ba_projection)
+    
+    ba_map = tf.keras.layers.Activation("sigmoid")(ba_comparison)
+    
+    ### Feature Fusion Module
+    semantic = tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv1_inv)
+    semantic = tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(semantic)
+    
+    if android:
+        x = tf.keras.layers.Concatenate(axis=-1)([semantic, inputs_s, ba_map])
+    else: 
+        x = tf.keras.layers.Concatenate(axis=-1)([semantic, inputs, ba_map])
+        
+    tf.keras.layers.Conv2D(filters=)
 
     shortcut = x
     
-    x = ReLU(name='re_lu_24')(x)
+    x = tf.keras.layers.Activation('relu')(x)
     x = SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_47_')(x)
     x = Activation('relu', name='activation_27')(x)
     x = SeparableConv2D(4, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48_')(x)

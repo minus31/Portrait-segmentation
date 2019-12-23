@@ -4,7 +4,7 @@
 
 - Train
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=10 --checkpoint_path='./trained_models' --weight_dir="./trained_models/initial.h5" --tflite_name="" --train=True --finetune=False --convert=False --android=False`
+`python main.py --input_shape=512 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/lightnet' --weight_dir="./trained_models/initial.h5" --tflite_name="" --train=True --finetune=False --convert=False --android=False`
 
 * Fine-Tuning
 
