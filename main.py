@@ -57,6 +57,8 @@ class SeerSegmentation():
             self.batch_size = config.batch_size
             self.nb_epoch = config.nb_epoch
             self.lr = config.lr
+
+        self.finetune = config.finetune
             
         self.val_ratio = config.val_ratio# default=0.8
         self.checkpoint = config.checkpoint # default=100
@@ -84,7 +86,7 @@ class SeerSegmentation():
 
         self.model = self.build_model()
 
-        if finetune:
+        if self.finetune:
             print('load pre-trained model weights')
             self.model.load_weights(self.weight_dir, by_name=True)
 
