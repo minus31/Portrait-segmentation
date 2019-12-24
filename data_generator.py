@@ -28,7 +28,7 @@ def get_edge(mask):
 class DataGeneratorMatting(keras.utils.Sequence):
     'Generate data for Keras'
 
-    def __init__(self, list_IDs, batch_size=32, dim=(256, 256), n_channels=3, shuffle=True, augment=False, train=True):
+    def __init__(self, list_IDs, batch_size=32, dim=(512, 512), n_channels=3, shuffle=True, augment=False, train=True):
         'Initialization'
         self.dim = dim
         self.batch_size = batch_size

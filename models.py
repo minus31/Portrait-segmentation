@@ -105,7 +105,7 @@ def matting_net(input_size, train=True, android=False):
         model = Model(inputs=inputs, outputs=out)
 
     return model
-
+    
 def residual_block(x, filters, kernel_size=(3, 3)):
     shortcut = x
     x = SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
@@ -114,6 +114,16 @@ def residual_block(x, filters, kernel_size=(3, 3)):
     x = Activation('relu')(x)
     x = add([shortcut, x])
     return x
+
+# def residual_block(x, filters, kernel_size=(3, 3)):
+#     shortcut = x
+#     x = ReLU()(x)
+#     x = SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
+#     x = Activation('relu')(x)
+#     x = SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
+
+#     x = add([shortcut, x])
+#     return x
 
 
 def light_matting_net(input_size, train=True, android=False):
