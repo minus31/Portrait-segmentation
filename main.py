@@ -58,7 +58,7 @@ class SeerSegmentation():
             self.nb_epoch = config.nb_epoch
             self.lr = config.lr
 
-        self.finetune = bool(config.finetune)
+        self.finetune = config.finetune
             
         self.val_ratio = config.val_ratio# default=0.8
         self.checkpoint = config.checkpoint # default=100
@@ -127,7 +127,7 @@ class SeerSegmentation():
                                  "boundary_attention" : "binary_crossentropy"},
                       loss_weights=[0.85, 0.15],
                       optimizer=opt,
-                      metrics={"output" : [iou_coef, "mse" ,'accuracy']})
+                      metrics={"output" : [iou_coef, "mse"]})
 
         """ Callback """
         monitor = 'loss'
