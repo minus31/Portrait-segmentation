@@ -62,9 +62,9 @@ def dice_loss(y_true, y_pred):
 
     return 1 - numerator / denominator
 
-def rmse(y_true, y_pred):
+def mse(y_true, y_pred):
 
-    return tf.sqrt(tf.reduce_mean(tf.square(tf.subtract(y_true, y_pred))))
+    return tf.reduce_mean(tf.square(tf.subtract(y_true, y_pred)))
 
 def ce_dice_focal_combined_loss(y_true, y_pred):
     
@@ -79,9 +79,9 @@ def ce_dice_focal_combined_loss(y_true, y_pred):
     
     focal = focal_loss()(y_true, y_pred)
     dl_ce = tf.reduce_mean(keras.losses.binary_crossentropy(y_true, y_pred) + dice_loss(y_true, y_pred))
-    rmse_ = rmse(y_true, y_pred)
+    mse_ = mse(y_true, y_pred)
     
-    return tf.add(tf.multiply(focal, 0.1), tf.multiply(dl_ce, 0.1), tf.multiply(rmse_, 0.8))
+    return tf.add(tf.add(tf.multiply(focal, 0.1), tf.multiply(dl_ce, 0.1)), tf.multiply(mse_, 0.8))
 
 # the metric
 def iou_coef(y_true, y_pred, smooth=1):
