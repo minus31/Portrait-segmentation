@@ -73,14 +73,14 @@ class SeerSegmentation():
         # if config.convert:
         #     self.weight_dir = config.weight_dir# default=None
         ##############################################
-        self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
+        # self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
+        self.img_paths = np.load("./dataset/img_paths.npy")
         
-    # def build_model(self, train=True):
-
-    #     return matting_net(input_size=self.input_shape, android=False, train=train)
     def build_model(self, train=True):
 
-            return light_matting_net(input_size=self.input_shape, android=False, train=train)
+        return matting_net(input_size=self.input_shape, android=False, train=train)
+    # def build_model(self, train=True):
+    #     return light_matting_net(input_size=self.input_shape, android=False, train=train)
 
     def train(self, finetune=False):
 
@@ -125,9 +125,9 @@ class SeerSegmentation():
         self.model.compile(
                       loss={"output" : ce_dice_focal_combined_loss,
                                  "boundary_attention" : "binary_crossentropy"},
-                      loss_weights=[0.7, 0.3],
+                      loss_weights=[0.85, 0.15],
                       optimizer=opt,
-                      metrics={"output" : [iou_coef, 'accuracy']})
+                      metrics={"output" : [iou_coef, "mse" ,'accuracy']})
 
         """ Callback """
         monitor = 'loss'
