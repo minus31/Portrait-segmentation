@@ -8,7 +8,7 @@
 
 * Fine-Tuning
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.000045 --val_ratio=0.8 --checkpoint=50 --checkpoint_path='./trained_models/strongmodel/' --weight_dir="./trained_models/portrait_dataset/20191219/73-0.08.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=512 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=1 --checkpoint_path='./trained_models/lightnet/' --weight_dir="./trained_models/lightnet/20191223/31-0.38.h5" --train=True --finetune=True --convert=False --android=False`
 
 - lsSingle image inference 
 
@@ -38,7 +38,7 @@ scp -r -i ~/.ssh/hyun.pem ./trained_models/20121212/30.h5 hyunkim@35.229.177.132
 
 
 
-### 모델 파일 이름
+### 모델 파일 이름(mattingnet)
 
 portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h5
 
@@ -56,7 +56,7 @@ portrait_seg_matting_256_191017_val_loss_0.0404_val_acc_0.9725_focal_1312.8737.h
 
  ./trained_models/Strongmodels/513-0.03.h5 : PFCN+ dataset 에 대해서만 Focal 0.8 나머지 0.2  boundary 0.1 나머지 0.9의 비율의 Loss로 학습 513 epochs val-iou = 0.9820
 
-
+./trained_models/Strongmodels/580-0.02.h5 : PFCN+ dataset 에 대해서만 Focal 0.8 나머지 0.2  boundary 0.1 나머지 0.9의 비율의 Loss로 학습 580 epochs val-iou = 모르지만 로스가 제일 낮음
 
 ----
 
