@@ -44,7 +44,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from indexnet.hlaspp import ASPP
-from indexnet.lib.nn import SynchronizedBatchNorm2d
+from lib.nn import SynchronizedBatchNorm2d
 from indexnet.hlindex import HolisticIndexBlock, DepthwiseO2OIndexBlock, DepthwiseM2OIndexBlock
 from indexnet.hldecoder import *
 from indexnet.hlconv import *
