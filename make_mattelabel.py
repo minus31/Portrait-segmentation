@@ -181,7 +181,7 @@ def inference(image_path):
 
         image = image_alignment(image, STRIDE)
         inputs = torch.from_numpy(np.expand_dims(image.transpose(2, 0, 1), axis=0))
-        inputs = inputs.cuda()
+        #inputs = inputs.cuda()
         
         # inference
         start = time()
