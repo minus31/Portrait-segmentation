@@ -85,7 +85,7 @@ def make_trimap(mask, size=(10, 10)):
         cnt2 = len(np.where(mask == 0)[0])
         cnt3 = len(np.where(mask == 1)[0])
         
-        print("all:{} bg:{} fg:{}".format(cnt1, cnt2, cnt3))
+        # print("all:{} bg:{} fg:{}".format(cnt1, cnt2, cnt3))
         assert(cnt1 == cnt2 + cnt3)
     except :
         _, mask = cv2.threshold(mask, 0.5, 1., cv2.THRESH_BINARY)
@@ -94,19 +94,33 @@ def make_trimap(mask, size=(10, 10)):
         cnt3 = len(np.where(mask == 1)[0])
         assert(cnt1 == cnt2 + cnt3)
 
-    
-    cnt1 = len(np.where(dilated >= 0)[0])
-    cnt2 = len(np.where(dilated == 0)[0])
-    cnt3 = len(np.where(dilated == 255)[0])
-    
-    print("all:{} bg:{} fg:{}".format(cnt1, cnt2, cnt3))
-    assert(cnt1 == cnt2 + cnt3)
+    try :
+        cnt1 = len(np.where(dilated >= 0)[0])
+        cnt2 = len(np.where(dilated == 0)[0])
+        cnt3 = len(np.where(dilated == 255)[0])
+        
+        # print("all:{} bg:{} fg:{}".format(cnt1, cnt2, cnt3))
+        assert(cnt1 == cnt2 + cnt3)
 
-    cnt1 = len(np.where(eroded >= 0)[0])
-    cnt2 = len(np.where(eroded == 0)[0])
-    cnt3 = len(np.where(eroded == 255)[0])
-    print("all:{} bg:{} fg:{}".format(cnt1, cnt2, cnt3))
-    assert(cnt1 == cnt2 + cnt3)
+    except :
+        _, dilated = cv2.threshold(dilated, 127, 255, cv2.THRESH_BINARY)
+        cnt1 = len(np.where(dilated >= 0)[0])
+        cnt2 = len(np.where(dilated == 0)[0])
+        cnt3 = len(np.where(dilated == 255)[0])
+        assert(cnt1 == cnt2 + cnt3)
+
+    try : 
+        cnt1 = len(np.where(eroded >= 0)[0])
+        cnt2 = len(np.where(eroded == 0)[0])
+        cnt3 = len(np.where(eroded == 255)[0])
+        # print("all:{} bg:{} fg:{}".format(cnt1, cnt2, cnt3))
+        assert(cnt1 == cnt2 + cnt3)
+    except :
+        _, eroded = cv2.threshold(eroded, 127, 255, cv2.THRESH_BINARY)
+        cnt1 = len(np.where(eroded >= 0)[0])
+        cnt2 = len(np.where(eroded == 0)[0])
+        cnt3 = len(np.where(eroded == 255)[0])
+        assert(cnt1 == cnt2 + cnt3)
 
     trimap = dilated.copy()
     
