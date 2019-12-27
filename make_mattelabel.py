@@ -69,8 +69,13 @@ def load_img_mask_pair(img_path):
         
     img = cv2.imread(img_path, cv2.IMREAD_COLOR)
     mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+    mask = mask * 255
+
+    if img.shape[0] > 2000:
+        img = cv2.resize(img, (1024, 1024))
+        mask = cv2.resize(mask, (1024, 1024))
     
-    return img, mask * 255
+    return img, mask
 
 def make_trimap(mask, size=(10, 10)):
 
