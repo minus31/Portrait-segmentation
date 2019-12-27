@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import torch
 import torch.nn as nn
-from indexnet.lib.nn import SynchronizedBatchNorm2d
+from lib.nn import SynchronizedBatchNorm2d
 
 def conv_bn(inp, oup, k=3, s=1, BatchNorm2d=SynchronizedBatchNorm2d):
     return nn.Sequential(

@@ -36,7 +36,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from indexnet.lib.nn import SynchronizedBatchNorm2d
+from lib.nn import SynchronizedBatchNorm2d
 
 
 def depth_sep_dilated_conv_3x3_bn(inp, oup, padding, dilation, BatchNorm2d):
