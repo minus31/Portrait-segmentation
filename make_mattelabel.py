@@ -32,9 +32,6 @@ RESTORE_FROM = './pretrained/indexnet_matting.pth.tar'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-if not os.path.exists(RESULT_DIR):
-    os.makedirs(RESULT_DIR)
-
 # load pretrained model
 net = hlmobilenetv2(
         pretrained=False,
