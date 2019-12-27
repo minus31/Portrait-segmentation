@@ -66,8 +66,8 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
 
-        if "Supervisely" in mask_path:
-            mask = mask * 255
+        # if "Supervisely" in mask_path:
+        #     mask = mask * 255
 
         # Resize image and mask
         h, w = self.dim
