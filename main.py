@@ -34,16 +34,16 @@ from tensorflow.random import set_random_seed
 
 set_random_seed(7777)
 
-def test_example(model, filename):
+# def test_example(model, filename):
 
-    img = cv2.imread("./dataset/selfie/training/00694.png", cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (256,256))
-    img = img / 255.
+#     img = cv2.imread("./dataset/selfie/training/00694.png", cv2.IMREAD_COLOR)
+#     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#     img = cv2.resize(img, (256,256))
+#     img = img / 255.
 
-    pred = model.predict(img[np.newaxis, :, :, :])
-    cv2.imwrite(filename, pred[0].squeeze(0).squeeze(-1))
-    return 0
+#     pred = model.predict(img[np.newaxis, :, :, :])
+#     cv2.imwrite(filename, pred[0].squeeze(0).squeeze(-1))
+#     return 0
 
 
 
@@ -77,11 +77,11 @@ class SeerSegmentation():
         self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15.npy")
         # self.img_paths = np.load("./dataset/img_paths.npy")
         
-    # def build_model(self, train=True):
-
-    #     return matting_net(input_size=self.input_shape, android=False, train=train)
     def build_model(self, train=True):
-        return light_matting_net(input_size=self.input_shape, android=False, train=train)
+
+        return matting_net(input_size=self.input_shape, android=False, train=train)
+    # def build_model(self, train=True):
+    #     return light_matting_net(input_size=self.input_shape, android=False, train=train)
 
     def train(self, finetune=False):
 
