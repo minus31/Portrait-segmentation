@@ -107,12 +107,12 @@ class DataGeneratorMatting(keras.utils.Sequence):
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):
             # Store sample & uv mask
-
-            mask_ID = ID.split(".p")[0] + "_matte.png"
+            if 'Supervisely' not in mask_ID:
+                mask_ID = ID.split(".p")[0] + "_matte.png"
 
             if 'Supervisely' in mask_ID:
                 mask_ID = mask_ID.replace("/img/", "/alpha/")
-                mask_ID = mask_ID.replace(".jpeg", "")
+                # mask_ID = mask_ID.replace(".jpeg", "")
 
             X[idx], y[idx], b[idx] = self.__get_data(img_path=ID, 
                                                mask_path=mask_ID)             
