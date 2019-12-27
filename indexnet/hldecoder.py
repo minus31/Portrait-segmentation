@@ -38,7 +38,7 @@ from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from lib.nn import SynchronizedBatchNorm2d
+from indexnet.lib.nn import SynchronizedBatchNorm2d
 
 from indexnet.hlconv import hlconv
 
