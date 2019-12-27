@@ -8,7 +8,7 @@
 
 * Fine-Tuning
 
-`python main.py --input_shape=512 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/lightnet/' --weight_dir="./trained_models/lightnet/20191224/01-0.41.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.00005 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/mattingnet/' --weight_dir="./trained_models/mattingnet/20191224/209-0.04.h5" --train=True --finetune=True --convert=False --android=False`
 
 - lsSingle image inference 
 

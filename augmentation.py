@@ -85,7 +85,7 @@ def gamma(img, mask, gamma_range):
         gamma = np.random.randint(int(gamma_range[0] * 100.0), int(gamma_range[1] * 100.0)) / 100.0
     invGamma = 1.0 / gamma
     table = np.array([((i / 255.0) ** invGamma) * 255 for i in np.arange(0, 256)]).astype('uint8')
-    img = cv2.LUT(img, table)ㅌ
+    img = cv2.LUT(img, table)
     return img, mask
  
 
