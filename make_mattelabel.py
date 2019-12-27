@@ -187,7 +187,7 @@ dslist = [ds for ds in os.listdir(DATASET_BASE) if "." not in ds]
 dslist[5:]
 
 # test
-for ds in dslist[6:]:
+for ds in dslist:
     
     img_dir = os.path.join(DATASET_BASE, ds, "img")
     alpha_dir = os.path.join(DATASET_BASE, ds, "alpha")
