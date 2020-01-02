@@ -121,7 +121,7 @@ def blur(img, mask):
 def occlusion(img, mask):
     # random cut-off
     mod = img.copy()
-    num_box = np.random.randint(3, 7)
+    num_box = np.random.randint(1, 7)
     k = np.int(img.shape[0] * 0.2)
     for _ in range(num_box):
         w = np.random.randint(0, img.shape[0])
