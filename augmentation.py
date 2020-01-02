@@ -22,7 +22,7 @@ def random_activate(aug_func):
 def identity_img(img, mask, *args, **kwargs) :
         return img, mask
 
-##### The methods needabel transformation #####
+##### The methods need label transformation #####
 @random_activate
 def hflip(img, mask):
 
@@ -78,6 +78,17 @@ def add_scalar(img, mask):
     return np.uint8(np.clip(img + scalar, 0, 255)), mask
 
 @random_activate
+def add_scalar_per_channel(img, mask):
+    """
+    add scalar to image 
+
+    scalar range : -50 ~ 50
+    """
+    scalar =  np.random.randint(-50, 50, 3) / 1.
+
+    return np.uint8(np.clip(img + scalar, 0, 255)), mask
+
+@random_activate
 def gamma(img, mask, gamma_range):
     if type(gamma_range) == float:
         gamma = gamma_range
@@ -88,7 +99,39 @@ def gamma(img, mask, gamma_range):
     img = cv2.LUT(img, table)
     return img, mask
  
+@random_activate
+def blur(img, mask):
+    toss = np.random.choice(np.arange(3))
+    # mean blur
+    if toss == 0:
+        k = np.random.randint(5, 21)
+        img = cv2.blur(img, (k, k))
+    # median blur
+    elif toss == 1:
+        k = np.random.choice(np.arange(5, 21, 2))
+        img = cv2.medianBlur(img, k)
+    # gaussian blur
+    else:
+        k = np.random.choice(np.arange(5, 21, 2))
+        std = np.random.randint(2,5)
+        img = cv2.GaussianBlur(img, (k, k), std)
+    return img, mask
 
+@random_activate
+def occlusion(img, mask):
+    # random cut-off
+    mod = img.copy()
+    num_box = np.random.randint(3, 7)
+    k = np.int(img.shape[0] * 0.2)
+    for _ in range(num_box):
+        w = np.random.randint(0, img.shape[0])
+        h = np.random.randint(0, img.shape[0])
+        mod[h:h+k, w:w+k, :] = np.ones(mod[h:h+k, w:w+k, :].shape) * 127
+    
+    # saliency based occlusion ,,, not implemented
+    # grad_kernel = np.array([1, 0, -1])
+    # saliency = cv2.filter2D(img, -1, grad_kernel)
+    return mod, mask
 
 class PortraitAugment(object):
     """
@@ -120,7 +163,10 @@ class PortraitAugment(object):
 
         # Don't need to transform the labels
         img, mask = add_scalar(img, mask)
+        img, mask = add_scalar_per_channel(img, mask)
         img, mask = gamma(img, mask, param_dict["gamma_range"])
+        img, mask = blur(img, mask)
+        img, mask = occlusion(img, mask)
 
         return img, mask
     

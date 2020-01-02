@@ -121,7 +121,6 @@ def residual_block(x, filters, kernel_size=(3, 3)):
 #     x = SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
 #     x = Activation('relu')(x)
 #     x = SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
-
 #     x = add([shortcut, x])
 #     return x
 
