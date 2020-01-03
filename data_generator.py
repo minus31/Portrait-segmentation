@@ -80,6 +80,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         if self.augment:
             try :
                 img, mask = aug.augment(img, mask, aug_params)
+                print(img.shape, mask.shape)
             except : 
                 print(img_path)
                 print(mask_path)
