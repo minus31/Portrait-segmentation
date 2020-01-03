@@ -74,7 +74,7 @@ class SeerSegmentation():
         #     self.weight_dir = config.weight_dir# default=None
         ##############################################
         # self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
-        self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15.npy")
+        self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15_withBlank_and_Custom.npy")
         # self.img_paths = np.load("./dataset/img_paths.npy")
         
     def build_model(self, train=True):
@@ -251,11 +251,13 @@ if __name__ == '__main__':
         seerSeg.train()
 
     if config.infer_single_img:
-        pred = seerSeg.infer_single_img(config.img_path)
-        print(pred)
+        print("NOT IMPLEMETED")
+        # pred = seerSeg.infer_single_img(config.img_path)
+        # print(pred)
 
     if config.convert:
-        if config.android:
-            seerSeg.convert_tflite(android=True)
-        else: 
-            seerSeg.convert_tflite()
+        print("NOT IMPLEMETED")
+        # if config.android:
+        #     seerSeg.convert_tflite(android=True)
+        # else: 
+        #     seerSeg.convert_tflite()

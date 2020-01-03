@@ -60,17 +60,23 @@ net.eval()
 
 def load_img_mask_pair(img_path):
     
-    mask_path = img_path.split(".p")[0] + "_matte.png"
     
-    if 'Supervisely' in mask_path:
+    if 'Supervisely' in img_path:
+        
+        mask_path = img_path.split(".p")[0] + "_matte.png"
         
         mask_path = mask_path.replace("/img/", "/masks_machine/")
         mask_path = mask_path.replace(".jpeg", "")
         
+    else:
+        mask_path = img_path.replace("/img/", "/mask/")
+        
     img = cv2.imread(img_path, cv2.IMREAD_COLOR)
     mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-    mask = mask * 255
-
+        
+    if np.max(mask) == 1:
+        mask = mask * 255
+    
     if img.shape[0] > 2000:
         img = cv2.resize(img, (1024, 1024))
         mask = cv2.resize(mask, (1024, 1024))
@@ -203,25 +209,33 @@ def inference(image_path):
         print('framerate: {0:.2f}Hz'.format(running_frame_rate))
         return alpha.astype(np.uint8)
 
-DATASET_BASE = "./dataset/Supervisely_person_dataset"
+# DATASET_BASE = "./dataset/Superxvisely_person_dataset"
+DATASET_BASE = "./dataset/Custom/img"
 
-dslist = [ds for ds in os.listdir(DATASET_BASE) if "." not in ds]
+# dslist = [ds for ds in os.listdir(DATASET_BASE) if "." not in ds]
 
-dslist[5:]
+# dslist[5:]
 
-# test
-for ds in dslist:
+# # test
+# for ds in dslist:
     
-    img_dir = os.path.join(DATASET_BASE, ds, "img")
-    alpha_dir = os.path.join(DATASET_BASE, ds, "alpha")
+#     img_dir = os.path.join(DATASET_BASE, ds, "img")
+#     alpha_dir = os.path.join(DATASET_BASE, ds, "alpha")
 
-    if not os.path.exists(alpha_dir):
-        os.mkdir(alpha_dir)
+#     if not os.path.exists(alpha_dir):
+#         os.mkdir(alpha_dir)
         
-    img_list = [os.path.join(DATASET_BASE, ds, "img", i) for i in os.listdir(img_dir)]
+#     img_list = [os.path.join(DATASET_BASE, ds, "img", i) for i in os.listdir(img_dir)]
     
-    for img_path in img_list:
+#     for img_path in img_list:
         
+        
+#         alpha = inference(img_path)
+#         print(img_path, "is done")
+
+img_list = [os.path.join(DATASET_BASE, i) for i in os.listdir(DATASET_BASE) if "jpg" in i]
+
+for img_path in img_list:
         
         alpha = inference(img_path)
         print(img_path, "is done")

@@ -127,7 +127,6 @@ def occlusion(img, mask):
         w = np.random.randint(0, img.shape[0])
         h = np.random.randint(0, img.shape[0])
         mod[h:h+k, w:w+k, :] = np.ones(mod[h:h+k, w:w+k, :].shape) * 127
-    
     # saliency based occlusion ,,, not implemented
     # grad_kernel = np.array([1, 0, -1])
     # saliency = cv2.filter2D(img, -1, grad_kernel)

@@ -61,18 +61,21 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
     def __get_data(self, img_path, mask_path):
         # Load img & mask
+        
+        h, w = self.dim
+
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.resize(img, (w, h))
 
-        mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        if "BlankDataset" in img_path:
+            mask = np.zeros((h, w), dtype=np.int)
+        else:
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            mask = cv2.resize(mask, (w, h))
 
         # if "Supervisely" in mask_path:
         #     mask = mask * 255
-
-        # Resize image and mask
-        h, w = self.dim
-        img = cv2.resize(img, (w, h))
-        mask = cv2.resize(mask, (w, h))
 
         if self.augment:
             try :
