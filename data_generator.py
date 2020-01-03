@@ -84,17 +84,18 @@ class DataGeneratorMatting(keras.utils.Sequence):
                 print(img_path)
                 print(mask_path)
         
+        if "BlankDataset" in img_path:
+            dil = np.zeros_like(mask)
+        else: 
+            # for Boundary Attention
+            dil = get_edge(mask)
 
-        # for Boundary Attention
-        dil = get_edge(mask)
-
-        # mask thresholding
-        # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
-        mask = mask[:,:,np.newaxis]
-        dil = dil[:, :, np.newaxis]
+            # mask thresholding
+            # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
+            mask = mask[:,:,np.newaxis]
+            dil = dil[:, :, np.newaxis]
+            
         # Normalize image and mask - normalize 와 Augmentation 순서 다시 고려해보자
-
-
         norm_img = img / 255.0
         norm_mask = mask / 255.0
         norm_dil = dil / 255.0
@@ -110,6 +111,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):
             # Store sample & uv mask
+
             if 'Supervisely' not in ID:
                 mask_ID = ID.split(".p")[0] + "_matte.png"
             else :
