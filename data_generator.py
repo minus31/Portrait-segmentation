@@ -69,7 +69,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         img = cv2.resize(img, (w, h))
 
         if "BlankDataset" in img_path:
-            mask = np.zeros((h, w), dtype=np.int)
+            mask = np.zeros(self.dim, dtype=np.int)
         else:
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             mask = cv2.resize(mask, (w, h))
@@ -94,7 +94,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
             # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
             mask = mask[:,:,np.newaxis]
             dil = dil[:, :, np.newaxis]
-            
+
         # Normalize image and mask - normalize 와 Augmentation 순서 다시 고려해보자
         norm_img = img / 255.0
         norm_mask = mask / 255.0
