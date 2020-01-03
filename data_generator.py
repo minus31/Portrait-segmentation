@@ -72,10 +72,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
             mask = np.zeros(self.dim, dtype=np.int)
         else:
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-            try:
-                mask = cv2.resize(mask, (w, h))
-            except :
-                print(mask_path)
+            mask = cv2.resize(mask, (w, h))
 
         # if "Supervisely" in mask_path:
         #     mask = mask * 255
@@ -92,7 +89,10 @@ class DataGeneratorMatting(keras.utils.Sequence):
             dil = np.zeros_like(mask)
         else: 
             # for Boundary Attention
-            dil = get_edge(mask)
+            try: 
+                dil = get_edge(mask)
+            except :
+                print(mask_path)
 
         # mask thresholding
         # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
