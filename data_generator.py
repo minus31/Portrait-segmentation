@@ -74,7 +74,6 @@ class DataGeneratorMatting(keras.utils.Sequence):
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             try:
                 mask = cv2.resize(mask, (w, h))
-
             except :
                 print(mask_path)
 
@@ -85,8 +84,9 @@ class DataGeneratorMatting(keras.utils.Sequence):
             try :
                 img, mask = aug.augment(img, mask, aug_params)
             except : 
-                print(img_path)
-                print(mask_path)
+                pass
+                # print(img_path)
+                # print(mask_path)
         
         if "BlankDataset" in img_path:
             dil = np.zeros_like(mask)
@@ -115,8 +115,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):
             # Store sample & uv mask
-
-            if 'Supervisely' not in ID:
+            if 'Supervisely' not in ID and "/Custom/img" not in ID:
                 mask_ID = ID.split(".p")[0] + "_matte.png"
             else :
                 mask_ID = ID.replace("/img/", "/alpha/")
