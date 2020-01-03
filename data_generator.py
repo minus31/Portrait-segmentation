@@ -80,7 +80,6 @@ class DataGeneratorMatting(keras.utils.Sequence):
         if self.augment:
             try :
                 img, mask = aug.augment(img, mask, aug_params)
-                print(img.shape, mask.shape)
             except : 
                 print(img_path)
                 print(mask_path)
@@ -91,10 +90,10 @@ class DataGeneratorMatting(keras.utils.Sequence):
             # for Boundary Attention
             dil = get_edge(mask)
 
-            # mask thresholding
-            # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
-            mask = mask[:,:,np.newaxis]
-            dil = dil[:, :, np.newaxis]
+        # mask thresholding
+        # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
+        mask = mask[:,:,np.newaxis]
+        dil = dil[:,:,np.newaxis]
 
         # Normalize image and mask - normalize 와 Augmentation 순서 다시 고려해보자
         norm_img = img / 255.0
