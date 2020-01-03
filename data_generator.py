@@ -72,7 +72,11 @@ class DataGeneratorMatting(keras.utils.Sequence):
             mask = np.zeros(self.dim, dtype=np.int)
         else:
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-            mask = cv2.resize(mask, (w, h))
+            try:
+                mask = cv2.resize(mask, (w, h))
+
+            except :
+                print(mask_path)
 
         # if "Supervisely" in mask_path:
         #     mask = mask * 255
