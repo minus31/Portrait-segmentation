@@ -20,11 +20,11 @@ This project is Keras implemented Portrait segmentation model.
 
 PFCN+ dataset was pulished in <a href="#pfcn">[1]</a>. Most of the solutions to handle portrait segmentation task are using this dataset. Although it's handy for us as well, it has 2 problems on building a segmentation model which is suitable to our needs.
 
-- Uncorrect foreground
+1. Imperfect foreground
 
 ![](https://www.dropbox.com/s/6i3txpri9dtjm78/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202019-12-23%2014.54.53.png?dl=1)
 
-* hand and object in hand have been eliminated
+2. hand and object in hand have been eliminated
 
 ![00153](https://www.dropbox.com/s/6uaba9agxzaow8s/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202019-12-23%2014.52.34.png?dl=1)
 
