@@ -96,6 +96,16 @@ def iou_coef(y_true, y_pred, smooth=1):
     iou = K.mean((intersection + smooth) / (union + smooth), axis=0)
     return iou
 
+def identity_mean_loss(y_true, y_pred):
+    loss = y_pred[y_pred > 0]
+    return K.mean(loss)
+
+def identity_loss(y_true, y_pred):
+
+    return K.mean(y_pred - 0 * y_true)
+
+
+
 # def mean_iou(y_true, y_pred):
 
 #     prec = []

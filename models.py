@@ -7,6 +7,7 @@ from keras.models import Model
 from keras.activations import sigmoid
 from keras import backend as K
 import tensorflow as tf
+import cv2 
 
 
 def matting_net(input_size, train=True, android=False):
@@ -97,23 +98,18 @@ def matting_net(input_size, train=True, android=False):
     x = Add(name='add_28')([shortcut, x])
     x = Conv2D(1, (1, 1), name='conv2d_7_')(x)
     
+    # if train:
+    #     out = Activation('sigmoid', name='output')(x)
+    #     model = Model(inputs=inputs, outputs=[out, ba])
     if train:
         out = Activation('sigmoid', name='output')(x)
-        model = Model(inputs=inputs, outputs=[out, ba])
 
-    else :
-        # out = Activation('tanh')(x)
-        # out = Lambda(lambda x : tf.log(x + 1e-8))(out)
+        refine = Lambda(lambda x : refine_loss(x[0], x[1], x[2]), name='refine')([out, inputs, ba])
+
+        model = Model(inputs=inputs, outputs=[out, ba, refine])
+
+    else:
         out = Activation('sigmoid', name='output')(x)
-        # out = Lambda(lambda x : tf.exp(x))(x)
-        # out = Activation("sigmoid", name='output')(out)
-
-        # out = Activation('tanh', name='output')(x)
-        # out = Activation('relu', name='output')(x)
-        #############################################
-        # out = Lambda(lambda x : tf.add(x, -0.5))(out)
-        # out = Activation("relu")(out)
-        # out = Lambda(lambda x : tf.(x, tf.add(x, 1e-11)))(out)
         model = Model(inputs=inputs, outputs=out)
 
     return model
@@ -126,6 +122,56 @@ def residual_block(x, filters, kernel_size=(3, 3)):
     x = Activation('relu')(x)
     x = add([shortcut, x])
     return x
+
+def compute_gredient(src, color=True):
+    if color :
+        GX = tf.constant(np.array([[[1,1,1], [0,0,0], [-1,-1,-11]],
+                               [[2, 2, 2], [0,0,0], [-2,-2,-2]],
+                               [[1,1,1], [0,0,0] ,[-1,-1,-1]]]), tf.float32)
+
+        GY = tf.constant(np.array([[[1,1,1], [2, 2, 2], [1,1,1]],
+                                [[0,0,0], [0,0,0], [0,0,0]],
+                                [[-1,-1,-1], [-2,-2,-2],[-1,-1,-1]]]), tf.float32)
+
+        GX = tf.reshape(GX, (3,3,3,1))
+        GY = tf.reshape(GY, (3,3,3,1))
+
+    else : 
+        GX = tf.constant(np.array([[1, 0, -1],
+                                [2, 0, -2],
+                                [1, 0 ,-1]]), tf.float32)
+
+        GY = tf.constant(np.array([[1, 2, 1],
+                                [0, 0, 0],
+                                [-1, -2,-1]]), tf.float32)
+    
+        GX = tf.reshape(GX, (3,3,1,1))
+        GY = tf.reshape(GY, (3,3,1,1))
+
+
+    X_g = tf.nn.conv2d(src, GX, padding="SAME")
+    Y_g = tf.nn.conv2d(src, GY, padding="SAME")
+
+    M = tf.sqrt(tf.add(tf.pow(X_g, 2), tf.pow(Y_g, 2)))
+
+    nu_x = X_g / M 
+    nu_y = Y_g / M
+    return M, nu_x, nu_y
+
+def refine_loss(y_pred, input_, boundary):
+
+    M_img, nuX_img, nuY_img = compute_gredient(input_, color=True)
+
+    M_pred, nuX_pred, nuY_pred = compute_gredient(y_pred, color=False)
+
+    Lcos = tf.add(1., -1 * tf.abs(tf.add(tf.multiply(nuX_img, nuX_pred), tf.multiply(nuY_img, nuY_pred)))) * M_pred
+
+    Lmag = tf.maximum(tf.add(1.5 * M_img, -1. * M_pred), 0)
+
+    L_refine = tf.multiply(tf.add(tf.multiply(Lcos, 0.5), tf.multiply(Lmag, 0.5)), boundary)
+    # res = tf.reduce_mean(L_refine[L_refine > 0], axis=-1)
+    # res = tf.reshape(res, (-1, 1))
+    return L_refine
 
 # def residual_block(x, filters, kernel_size=(3, 3)):
 #     shortcut = x

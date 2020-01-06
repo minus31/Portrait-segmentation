@@ -112,6 +112,8 @@ class DataGeneratorMatting(keras.utils.Sequence):
         X = np.empty((self.batch_size, self.dim[0], self.dim[1], self.n_channels))
         y = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
         b = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
+        # for refine loss 
+        z = np.ones((self.batch_size, 1))
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):
             # Store sample & uv mask
@@ -126,4 +128,4 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
             X[idx], y[idx], b[idx] = self.__get_data(img_path=ID, 
                                                mask_path=mask_ID)             
-        return X, [y, b]
+        return X, [y, b, z]
