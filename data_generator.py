@@ -14,7 +14,7 @@ aug_params = {
 def get_edge(mask):
 
     edge = cv2.Canny(mask, 50, 100)
-    k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 30)
+    k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 40)
     if k < 5:
         k = 5
     ksize = (k, k)
@@ -113,10 +113,10 @@ class DataGeneratorMatting(keras.utils.Sequence):
         y = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
         b = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
         # for refine loss 
-        z = np.ones((self.batch_size, 1))
+        # z = np.ones((self.batch_size, 1))
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):
-            # Store sample & uv mask
+            # Store sample & uv maskp
             if 'Supervisely' not in ID and "/Custom/img" not in ID:
                 mask_ID = ID.split(".p")[0] + "_matte.png"
             else :
@@ -128,4 +128,4 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
             X[idx], y[idx], b[idx] = self.__get_data(img_path=ID, 
                                                mask_path=mask_ID)             
-        return X, [y, b, z]
+        return X, [y, b]
