@@ -233,9 +233,13 @@ DATASET_BASE = "./dataset/Custom/img"
 #         alpha = inference(img_path)
 #         print(img_path, "is done")
 
-img_list = [os.path.join(DATASET_BASE, i) for i in os.listdir(DATASET_BASE) if "jpg" in i]
+img_list = [os.path.join(DATASET_BASE, i) for i in os.listdir(DATASET_BASE) if "DS_Store" not in i]
 
 for img_path in img_list:
-        
-        alpha = inference(img_path)
-        print(img_path, "is done")
+    alpha_list = os.listdir("./dataset/Custom/alpha")
+    if img_path.split("/")[-1] in alpha_list:
+        print("Already DONE", img_path)
+        continue
+
+    alpha = inference(img_path)
+    print(img_path, "is done")

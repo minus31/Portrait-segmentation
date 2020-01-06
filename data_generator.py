@@ -14,9 +14,9 @@ aug_params = {
 def get_edge(mask):
 
     edge = cv2.Canny(mask, 50, 100)
-    k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 50)
-    if k < 2:
-        k = 2
+    k = np.int((mask[mask > 50].shape[0] / (mask.shape[0] * mask.shape[1])) * 30)
+    if k < 5:
+        k = 5
     ksize = (k, k)
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
 

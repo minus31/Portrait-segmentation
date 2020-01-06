@@ -96,12 +96,24 @@ def matting_net(input_size, train=True, android=False):
     x = SeparableConv2D(4, (3, 3), padding='same', depthwise_initializer='he_normal', name='separable_conv2d_48_')(x)
     x = Add(name='add_28')([shortcut, x])
     x = Conv2D(1, (1, 1), name='conv2d_7_')(x)
-    out = Activation('sigmoid', name='output')(x)
     
     if train:
+        out = Activation('sigmoid', name='output')(x)
         model = Model(inputs=inputs, outputs=[out, ba])
 
     else :
+        # out = Activation('tanh')(x)
+        # out = Lambda(lambda x : tf.log(x + 1e-8))(out)
+        out = Activation('sigmoid', name='output')(x)
+        # out = Lambda(lambda x : tf.exp(x))(x)
+        # out = Activation("sigmoid", name='output')(out)
+
+        # out = Activation('tanh', name='output')(x)
+        # out = Activation('relu', name='output')(x)
+        #############################################
+        # out = Lambda(lambda x : tf.add(x, -0.5))(out)
+        # out = Activation("relu")(out)
+        # out = Lambda(lambda x : tf.(x, tf.add(x, 1e-11)))(out)
         model = Model(inputs=inputs, outputs=out)
 
     return model
