@@ -124,30 +124,43 @@ def residual_block(x, filters, kernel_size=(3, 3)):
     return x
 
 def compute_gredient(src, color=True):
-    if color :
-        GX = tf.constant(np.array([[[1,1,1], [0,0,0], [-1,-1,-11]],
-                               [[2, 2, 2], [0,0,0], [-2,-2,-2]],
-                               [[1,1,1], [0,0,0] ,[-1,-1,-1]]]), tf.float32)
+    # if color :
+    #     GX = tf.constant(np.array([[[1,1,1], [0,0,0], [-1,-1,-11]],
+    #                            [[2, 2, 2], [0,0,0], [-2,-2,-2]],
+    #                            [[1,1,1], [0,0,0] ,[-1,-1,-1]]]), tf.float32)
 
-        GY = tf.constant(np.array([[[1,1,1], [2, 2, 2], [1,1,1]],
-                                [[0,0,0], [0,0,0], [0,0,0]],
-                                [[-1,-1,-1], [-2,-2,-2],[-1,-1,-1]]]), tf.float32)
+    #     GY = tf.constant(np.array([[[1,1,1], [2, 2, 2], [1,1,1]],
+    #                             [[0,0,0], [0,0,0], [0,0,0]],
+    #                             [[-1,-1,-1], [-2,-2,-2],[-1,-1,-1]]]), tf.float32)
 
-        GX = tf.reshape(GX, (3,3,3,1))
-        GY = tf.reshape(GY, (3,3,3,1))
+    #     GX = tf.reshape(GX, (3,3,3,1))
+    #     GY = tf.reshape(GY, (3,3,3,1))
 
-    else : 
-        GX = tf.constant(np.array([[1, 0, -1],
+    # else : 
+    #     GX = tf.constant(np.array([[1, 0, -1],
+    #                             [2, 0, -2],
+    #                             [1, 0 ,-1]]), tf.float32)
+
+    #     GY = tf.constant(np.array([[1, 2, 1],
+    #                             [0, 0, 0],
+    #                             [-1, -2,-1]]), tf.float32)
+    
+    #     GX = tf.reshape(GX, (3,3,1,1))
+    #     GY = tf.reshape(GY, (3,3,1,1))
+    GX = tf.constant(np.array([[1, 0, -1],
                                 [2, 0, -2],
                                 [1, 0 ,-1]]), tf.float32)
 
-        GY = tf.constant(np.array([[1, 2, 1],
-                                [0, 0, 0],
-                                [-1, -2,-1]]), tf.float32)
-    
-        GX = tf.reshape(GX, (3,3,1,1))
-        GY = tf.reshape(GY, (3,3,1,1))
+    GY = tf.constant(np.array([[1, 2, 1],
+                            [0, 0, 0],
+                            [-1, -2,-1]]), tf.float32)
 
+    GX = tf.reshape(GX, (3,3,1,1))
+    GY = tf.reshape(GY, (3,3,1,1))
+
+    if src.shape[-1] > 1:
+        src = tf.reduce_mean(src, axis=-1)
+        src = tf.expand_dims(src, axis=-1)
 
     X_g = tf.nn.conv2d(src, GX, padding="SAME")
     Y_g = tf.nn.conv2d(src, GY, padding="SAME")
