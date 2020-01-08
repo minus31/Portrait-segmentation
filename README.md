@@ -8,15 +8,15 @@ This project is Keras implemented Portrait segmentation model.
 
 - **Train**
 
-`python main.py --input_shape=512 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/lightnet' --weight_dir="./trained_models/initial.h5" --tflite_name="" --train=True --finetune=False --convert=False --android=False`
+`python main.py --input_shape=512 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/lightnet' --weight_dir="./trained_models/initial.h5" --tflite_name="" --train=True --finetune=False --convert=False --android=False --model="mattingnet"`
 
 * **Fine-Tuning**
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.00005 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/mattingnet/' --weight_dir="./trained_models/mattingnet/20191224/209-0.04.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.00005 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/mattingnet/' --weight_dir="./trained_models/mattingnet/20191224/209-0.04.h5" --train=True --finetune=True --convert=False --android=False --model="mattingnet"`
 
 * **light model Fine-Tuning**
 
-`python main.py --input_shape=512 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/lightnet/' --weight_dir="./trained_models/lightnet/20191226/132-0.21.h5" --train=True --finetune=True --convert=False --android=False`
+`python main.py --input_shape=512 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/lightnet/' --weight_dir="./trained_models/lightnet/20191226/132-0.21.h5" --train=True --finetune=True --convert=False --android=False --model="lightnet"`
 
 
 
@@ -182,7 +182,21 @@ docker run -Pit -u root:root --name dlhk --rm --runtime=nvidia -v /home/hyunkim:
 `docker run -Pit --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3`
 
 * 추가될 패키지 
+
   * keras
+
+  * cv2
+
+    * ```
+      apt-get update
+      apt-get install -y libsm6 libxext6 libxrender-dev
+      pip install opencv-python
+      ```
+
+    *  
+
+  * git 
+
   * 
 
 
