@@ -61,6 +61,7 @@ class SeerSegmentation():
         self.finetune = config.finetune
             
         self.val_ratio = config.val_ratio# default=0.8
+        self.model = config.model
         self.checkpoint = config.checkpoint # default=100
 
         self.checkpoint_path = os.path.join(config.checkpoint_path, get_current_day()) # default="trained_models/{get_current_day()}"
@@ -79,7 +80,11 @@ class SeerSegmentation():
         
     def build_model(self, train=True):
 
-        return matting_net(input_size=self.input_shape, android=False, train=train)
+        if self.model == "mattingnet":
+            return matting_net(input_size=self.input_shape, android=False, train=train)
+        elif self.model == "lightnet":
+            return light_matting_net(input_size=self.input_shape, android=False, train=train)
+
     # def build_model(self, train=True):
     #     return light_matting_net(input_size=self.input_shape, android=False, train=train)
 
@@ -231,6 +236,7 @@ if __name__ == '__main__':
     args.add_argument('--lr', type=float, default=0.00045)
     args.add_argument('--val_ratio', type=float, default=0.8)
 
+    args.add_argument('--model', type=str, default="mattingnet")
     args.add_argument('--checkpoint', type=int, default=100)
     args.add_argument('--checkpoint_path', type=str, default="./trained_models")
     args.add_argument('--weight_dir', type=str, default="")
