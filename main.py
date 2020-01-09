@@ -82,7 +82,7 @@ class SeerSegmentation():
 
         if self.model == "mattingnet":
             return matting_net(input_size=self.input_shape, android=False, train=train)
-            
+
         elif self.model == "lightnet":
             return light_matting_net(input_size=self.input_shape, android=False, train=train)
 
