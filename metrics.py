@@ -60,7 +60,7 @@ def dice_loss(y_true, y_pred):
     numerator = 2 * tf.reduce_sum(y_true * y_pred, axis=(1,2,3))
     denominator = tf.reduce_sum(y_true + y_pred, axis=(1,2,3))
 
-    return 1 - numerator / denominator
+    return 1 - numerator / (denominator + tf.keras.backend.epsilon())
 
 def mse(y_true, y_pred):
 
@@ -75,13 +75,14 @@ def ce_dice_focal_combined_loss(y_true, y_pred):
         numerator = 2 * tf.reduce_sum(y_true * y_pred, axis=(1,2,3))
         denominator = tf.reduce_sum(y_true + y_pred, axis=(1,2,3))
 
-        return tf.reshape(1 - numerator / denominator, (-1, 1, 1))
+        return tf.reshape(1 - (numerator / (denominator + tf.keras.backend.epsilon())), (-1, 1, 1))
     
     focal = focal_loss()(y_true, y_pred)
     dl_ce = tf.reduce_mean(keras.losses.binary_crossentropy(y_true, y_pred) + dice_loss(y_true, y_pred))
     mse_ = mse(y_true, y_pred)
     # return tf.add(tf.multiply(focal, 0.5), tf.multiply(dl_ce, 0.5))
     return tf.add(tf.add(tf.multiply(focal, 0.5), tf.multiply(dl_ce, 0.3)), tf.multiply(mse_, 0.2))
+    # return tf.add(tf.add(tf.multiply(focal, 0.7), tf.multiply(dl_ce, 0.2)), tf.multiply(mse_, 0.1))
 
 # the metric
 def iou_coef(y_true, y_pred, smooth=1):
