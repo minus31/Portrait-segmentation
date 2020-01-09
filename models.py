@@ -104,14 +104,14 @@ def matting_net(input_size, train=True, android=False):
     if train:
         # out = Activation('sigmoid', name='output')(x)
         out = Activation('tanh', name='output')(x)
-        out = Activation('relu', name='output')(out)
+        out = Activation('relu', name='output2')(out)
         # refine = Lambda(lambda x : refine_loss(x[0], x[1], x[2]), name='refine')([out, inputs, ba])
         model = Model(inputs=inputs, outputs=[out, ba])
 
     else:
         # out = Activation('sigmoid', name='output')(x)
         out = Activation('tanh', name='output')(x)
-        out = Activation('relu', name='output')(out)
+        out = Activation('relu', name='output2')(out)
         model = Model(inputs=inputs, outputs=out)
 
     return model
