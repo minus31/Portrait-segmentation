@@ -109,9 +109,9 @@ def matting_net(input_size, train=True, android=False):
         model = Model(inputs=inputs, outputs=[out, ba])
 
     else:
-        # out = Activation('sigmoid', name='output')(x)
-        out = Activation('tanh', name='output2')(x)
-        out = Activation('relu', name='output')(out)
+        out = Activation('sigmoid', name='output')(x)
+        # out = Activation('tanh', name='output2')(x)
+        # out = Activation('relu', name='output')(out)
         model = Model(inputs=inputs, outputs=out)
 
     return model
