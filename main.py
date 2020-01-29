@@ -131,7 +131,7 @@ class SeerSegmentation():
 
         self.model.compile(
                       loss={"output" : ce_dice_focal_combined_loss,
-                                 "boundary_attention" : "binary_crossentropy",},
+                            "boundary_attention" : "binary_crossentropy",},
                       loss_weights=[0.8, 0.2],
                       optimizer=opt,
                       metrics={"output" : [iou_coef, "mse"]})

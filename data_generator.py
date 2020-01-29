@@ -32,7 +32,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         'Initialization'
         self.dim = dim
         self.batch_size = batch_size
-        self.list_IDs = list_IDs
+        self.list_IDs = np.array(list_IDs)
         self.n_channels = n_channels
         self.shuffle = shuffle
         self.augment = augment
@@ -48,7 +48,8 @@ class DataGeneratorMatting(keras.utils.Sequence):
         # Generate indexes of the batch
         indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
         # Find list of IDs
-        list_IDs_temp = [self.list_IDs[k] for k in indexes]
+#         list_IDs_temp = [self.list_IDs[k] for k in indexes]
+        list_IDs_temp = self.list_IDs[indexes]
         # Generate data
         X, y = self.__data_generation(list_IDs_temp)
         return X, y
@@ -61,7 +62,6 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
     def __get_data(self, img_path, mask_path):
         # Load img & mask
-        
         h, w = self.dim
 
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
