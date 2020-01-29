@@ -1,3 +1,29 @@
+## Before building this Dockerfile 
+## make sure nvidia-docker is installed on the host envirment 
+## how to install nvidia-docker
+# # 레파지토리 추가
+# curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+#   sudo apt-key add -
+# curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docker.list | \
+#   sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+# sudo apt-get update
+
+# # 패키지 설치
+# sudo apt-get install -y nvidia-docker2
+
+# # docker 데몬 내림
+# sudo pkill -SIGHUP dockerd
+
+## /etc/docker/daemon.json  에 아래 설정을 추가
+# {
+#     "runtimes": {
+#         "nvidia": {
+#             "path": "/usr/bin/nvidia-container-runtime",
+#             "runtimeArgs": []
+#         }
+#     }
+# }
+
 FROM tensorflow:latest-gpu-py3
 MAINTAINER n31fromsouth "n31fromsouth@gmail.com"
 

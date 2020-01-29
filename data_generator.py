@@ -1,7 +1,9 @@
 import numpy as np
-import keras
+import tensorflow as tf
 import cv2
+
 from augmentation import PortraitAugment
+from preprocess import image_preprocess
 
 # Initialize portrait augment
 aug = PortraitAugment()
@@ -11,6 +13,8 @@ aug_params = {
     "scale_range": (0.6, 1.5),
     "gamma_range": (0.5, 1.5)
 }
+
+
 def get_edge(mask):
 
     edge = cv2.Canny(mask, 50, 100)
@@ -25,7 +29,7 @@ def get_edge(mask):
     return dil
 
 
-class DataGeneratorMatting(keras.utils.Sequence):
+class DataGeneratorMatting(tf.keras.utils.Sequence):
     'Generate data for Keras'
 
     def __init__(self, list_IDs, batch_size=32, dim=(512, 512), n_channels=3, shuffle=True, augment=False, train=True):
@@ -41,7 +45,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
 
     def __len__(self):
         'Denotes the number of batches per epoch'
-        return int(np.floor(len(self.list_IDs) / self.batch_size))
+        return len(self.list_IDs) // self.batch_size
 
     def __getitem__(self, index):
         'Generate one batch of data'
@@ -74,16 +78,12 @@ class DataGeneratorMatting(keras.utils.Sequence):
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             mask = cv2.resize(mask, (w, h))
 
-        # if "Supervisely" in mask_path:
-        #     mask = mask * 255
-
         if self.augment:
             try :
                 img, mask = aug.augment(img, mask, aug_params)
             except : 
-                pass
-                # print(img_path)
-                # print(mask_path)
+                print(img_path)
+                print(mask_path)
         
         if "BlankDataset" in img_path:
             dil = np.zeros_like(mask)
@@ -99,10 +99,9 @@ class DataGeneratorMatting(keras.utils.Sequence):
         mask = mask[:,:,np.newaxis]
         dil = dil[:,:,np.newaxis]
 
-        # Normalize image and mask - normalize 와 Augmentation 순서 다시 고려해보자
-        norm_img = img / 255.0
-        norm_mask = mask / 255.0
-        norm_dil = dil / 255.0
+        norm_img = image_preprocess(img)
+        norm_mask = image_preprocess(mask)
+        norm_dil = image_preprocess(dil)
 
         return norm_img, norm_mask, norm_dil
 
@@ -112,8 +111,7 @@ class DataGeneratorMatting(keras.utils.Sequence):
         X = np.empty((self.batch_size, self.dim[0], self.dim[1], self.n_channels))
         y = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
         b = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
-        # for refine loss 
-        # z = np.ones((self.batch_size, 1))
+        
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):
             # Store sample & uv maskp
