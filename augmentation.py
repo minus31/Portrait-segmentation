@@ -85,7 +85,6 @@ def add_scalar_per_channel(img, mask):
     scalar range : -50 ~ 50
     """
     scalar =  np.random.randint(-50, 50, 3) / 1.
-
     return np.uint8(np.clip(img + scalar, 0, 255)), mask
 
 @random_activate
