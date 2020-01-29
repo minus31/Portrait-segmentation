@@ -179,20 +179,18 @@ docker run -Pit -u root:root --name dlhk --rm --runtime=nvidia -v /home/hyunkim:
 
 > `e` 태그는 비밀번호 설정하는 것
 
-`docker run -Pit --name dlhk --rm --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3`
+`docker run -Pit --name dlhk --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3`
 
 * 추가될 패키지 
-
-  * keras
 
   * cv2
 
     * ```
-      apt-get update
+    apt-get update
       apt-get install -y libsm6 libxext6 libxrender-dev
       pip install opencv-python
       ```
-
+  
     *  
 
   * git 

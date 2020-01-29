@@ -21,15 +21,38 @@ from indexnet.hlmobilenetv2 import hlmobilenetv2
 import warnings
 warnings.filterwarnings("ignore")
 
+"""
+This python script does tansforming the ground-truth in binary way(0 or 1 if a pixel is human or not) 
+
+TO Run this file, 
+
+1. indexnet repo is need to be cloned and import that porperly 
+(https://github.com/poppinace/indexnet_matting)
+
+2. Download weights file for the network. 
+in my case, './indexnet/pretrained/indexnet_matting.pth.tar'
+
+3. Specify image directory. And store the path in `DATASET_BASE`
+
+4. make directory where the result will be located. 
+"""
+
+RESTORE_FROM = './indexnet/pretrained/indexnet_matting.pth.tar'
+DATASET_BASE = "./dataset/Custom/img"
+ALPHA_BASE = "./dataset/Custom/alpha"
+
+if not os.paht.exists(ALPHA_BASE):
+    os.mkdir(ALPHA_BASE)
+
+alpha_list = os.listdir(ALPHA_BASE)
+
+img_list = [os.path.join(DATASET_BASE, i) for i in os.listdir(DATASET_BASE) if "DS_Store" not in i]
+
 
 IMG_SCALE = 1./255
 IMG_MEAN = np.array([0.485, 0.456, 0.406, 0]).reshape((1, 1, 4))
 IMG_STD = np.array([0.229, 0.224, 0.225, 1]).reshape((1, 1, 4))
-
 STRIDE = 32
-RESTORE_FROM = './pretrained/indexnet_matting.pth.tar'
-
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # load pretrained model
@@ -210,7 +233,6 @@ def inference(image_path):
         return alpha.astype(np.uint8)
 
 # DATASET_BASE = "./dataset/Superxvisely_person_dataset"
-DATASET_BASE = "./dataset/Custom/img"
 
 # dslist = [ds for ds in os.listdir(DATASET_BASE) if "." not in ds]
 
@@ -233,9 +255,6 @@ DATASET_BASE = "./dataset/Custom/img"
 #         alpha = inference(img_path)
 #         print(img_path, "is done")
 
-img_list = [os.path.join(DATASET_BASE, i) for i in os.listdir(DATASET_BASE) if "DS_Store" not in i]
-
-alpha_list = os.listdir("./dataset/Custom/alpha")
 
 for img_path in img_list:
    
@@ -244,4 +263,4 @@ for img_path in img_list:
         continue
 
     alpha = inference(img_path)
-    print(img_path, "is done")
+    print("Complete", img_path)
