@@ -107,7 +107,7 @@ def residual_block(x, filters, kernel_size=(3, 3)):
     x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
     x = tf.keras.layers.PReLU()(x)
     x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
-    x = tf.keras.layers.Add([shortcut, x])
+    x = tf.keras.layers.Add()([shortcut, x])
     return x
 
 
