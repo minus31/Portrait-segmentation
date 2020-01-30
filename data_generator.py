@@ -79,11 +79,12 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
             mask = cv2.resize(mask, (w, h))
 
         if self.augment:
-            try :
-                img, mask = aug.augment(img, mask, aug_params)
-            except : 
-                print(img_path)
-                print(mask_path)
+            img, mask = aug.augment(img, mask, aug_params)
+            # try :
+            #     img, mask = aug.augment(img, mask, aug_params)
+            # except : 
+            #     print(img_path)
+            #     print(mask_path)
         
         if "BlankDataset" in img_path:
             dil = np.zeros_like(mask)
