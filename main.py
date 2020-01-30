@@ -64,8 +64,9 @@ class SeerSegmentation():
 
         if self.finetune:
             try : 
-                self.model.load_weights(self.weight_dir, by_name=True)
+                self.model.load_weights(self.weight_dir, by_name=False)
                 print('load pre-trained model weights')
+
             except Exception as err: 
                 print(err)
                 print("\n")
@@ -97,7 +98,7 @@ class SeerSegmentation():
         train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
         test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
-        opt = keras.optimizers.adam(lr=self.lr)
+        opt = tf.keras.optimizers.adam(lr=self.lr)
 
         # # Freeze parts of network
         # for layer in self.model.layers[:-7]:
