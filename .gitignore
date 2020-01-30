@@ -6,6 +6,9 @@ trained_models/
 
 #logs 
 logs/
+
+# mlmodel 
+mlmodel/
 #tflite
 *.tflite
 

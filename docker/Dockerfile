@@ -1,3 +1,5 @@
+### TO BE IMPLEMENTED
+
 ## Before building this Dockerfile 
 ## make sure nvidia-docker is installed on the host envirment 
 ## how to install nvidia-docker
@@ -23,7 +25,6 @@
 #         }
 #     }
 # }
-
 FROM tensorflow:latest-gpu-py3
 MAINTAINER n31fromsouth "n31fromsouth@gmail.com"
 
