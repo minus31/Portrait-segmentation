@@ -98,7 +98,7 @@ class SeerSegmentation():
         train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
         test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
-        opt = tf.keras.optimizers.adam(lr=self.lr)
+        opt = tf.keras.optimizers.Adam(lr=self.lr)
 
         # # Freeze parts of network
         # for layer in self.model.layers[:-7]:
