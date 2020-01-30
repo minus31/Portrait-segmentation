@@ -38,7 +38,7 @@ def vflip(img, mask):
     return img, mask.squeeze()
 
 @random_activate
-def rotate_and_scale(img, mask, angle_range, scale_range):
+def rotate_and_scale(img, mask, angle_range, scale_range, mask_transform=True):
     if type(angle_range) == int:
         angle = angle_range
     else:
@@ -55,12 +55,8 @@ def rotate_and_scale(img, mask, angle_range, scale_range):
     M = cv2.getRotationMatrix2D((c_x, c_y), angle, scale)
     img = cv2.warpAffine(img, M, (w, h))
 
-    # For mask
-    # h, w = mask.shape[:2]
-    # c_x = w / 2
-    # c_y = h / 2
-    # M = cv2.getRotationMatrix2D((c_x, c_y), angle, scale)
-    mask = cv2.warpAffine(mask, M, (w, h))
+    if mask_transform:
+        mask = cv2.warpAffine(mask, M, (w, h))
 
     return img, mask
 
@@ -138,7 +134,7 @@ class PortraitAugment(object):
     def __init__(self):
         pass
 
-    def augment(self, img, mask, param_dict):
+    def augment(self, img, mask, param_dict, mask_transform=True):
         """
         Do image and mask augment.
         Args:
@@ -157,7 +153,7 @@ class PortraitAugment(object):
         # Need to transform the labels
         img, mask = hflip(img, mask)
         img, mask = vflip(img, mask)
-        img, mask = rotate_and_scale(img, mask, param_dict["angle_range"], param_dict["scale_range"])
+        img, mask = rotate_and_scale(img, mask, param_dict["angle_range"], param_dict["scale_range"], mask_transform=mask_transform)
 
         # Don't need to transform the labels
         img, mask = add_scalar(img, mask)

@@ -68,32 +68,42 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         # Load img & mask
         h, w = self.dim
 
+        blank_token = 0
+
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.resize(img, (w, h))
 
         if "BlankDataset" in img_path:
+            blank_token = 1
+
+        if blank_token:
             mask = np.zeros(self.dim, dtype=np.int)
         else:
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             mask = cv2.resize(mask, (w, h))
 
         if self.augment:
-            img, mask = aug.augment(img, mask, aug_params)
+            if blank_token:
+                img, mask = aug.augment(img, mask, aug_params, mask_transform=False)
+            else:
+                img, mask = aug.augment(img, mask, aug_params)
             # try :
             #     img, mask = aug.augment(img, mask, aug_params)
             # except : 
             #     print(img_path)
             #     print(mask_path)
         
-        if "BlankDataset" in img_path:
+        if blank_token:
             dil = np.zeros_like(mask)
         else: 
+
             # for Boundary Attention
-            try: 
-                dil = get_edge(mask)
-            except :
-                print(mask_path)
+            dil = get_edge(mask)
+            # try: 
+            #     dil = get_edge(mask)
+            # except :
+            #     print(mask_path)
 
         # mask thresholding
         # mask = cv2.threshold(mask, 150, 255, cv2.THRESH_BINARY)[1]
