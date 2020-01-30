@@ -100,8 +100,8 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         dil = dil[:,:,np.newaxis]
 
         norm_img = image_preprocess(img)
-        norm_mask = image_preprocess(mask)
-        norm_dil = image_preprocess(dil)
+        norm_mask = mask / 255.
+        norm_dil = dil / 255. 
 
         return norm_img, norm_mask, norm_dil
 
