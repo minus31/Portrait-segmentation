@@ -45,28 +45,28 @@ def network_big(input_size, train=True, android=False):
     ###########
     ## 4th-inverse line
     conv4_inv = tf.keras.layers.Conv2DTranspose(128, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv5)
-    conv4_inv = tf.keras.layers.Add([conv4, conv4_inv])
+    conv4_inv = tf.keras.layers.Add()([conv4, conv4_inv])
     conv4_inv = residual_block(conv4_inv, filters=128, kernel_size=(3, 3))
     conv4_inv = residual_block(conv4_inv, filters=128, kernel_size=(3, 3))
     conv4_inv = residual_block(conv4_inv, filters=128, kernel_size=(3, 3))
 
     ## 3rd-inverse line
     conv3_inv = tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv4_inv)
-    conv3_inv = tf.keras.layers.Add([conv3, conv3_inv])
+    conv3_inv = tf.keras.layers.Add()([conv3, conv3_inv])
     conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
     conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
     conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
 
     ## 2nd-inverse line
     conv2_inv = tf.keras.layers.Conv2DTranspose(32, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv3_inv)
-    conv2_inv = tf.keras.layers.Add([conv2, conv2_inv])
+    conv2_inv = tf.keras.layers.Add()([conv2, conv2_inv])
     conv2_inv = residual_block(conv2_inv, filters=32, kernel_size=(3, 3))
     conv2_inv = residual_block(conv2_inv, filters=32, kernel_size=(3, 3))
     conv2_inv = residual_block(conv2_inv, filters=32, kernel_size=(3, 3))
 
     ## 1st-inverse line
     conv1_inv = tf.keras.layers.Conv2DTranspose(8, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv2_inv)
-    conv1_inv = tf.keras.layers.Add([conv1, conv1_inv])
+    conv1_inv = tf.keras.layers.Add()([conv1, conv1_inv])
     conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3))
     conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3))
     conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3))
@@ -147,19 +147,19 @@ def network_small(input_size, train=True, android=False):
     
 
     conv4_inv = tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv5)
-    conv4_inv = tf.keras.layers.Add([conv4, conv4_inv])
+    conv4_inv = tf.keras.layers.Add()([conv4, conv4_inv])
     conv4_inv = residual_block(conv4_inv, filters=64, kernel_size=(3, 3))
 
     conv3_inv = tf.keras.layers.Conv2DTranspose(32, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv4_inv)
-    conv3_inv = tf.keras.layers.Add([conv3, conv3_inv])
+    conv3_inv = tf.keras.layers.Add()([conv3, conv3_inv])
     conv3_inv = residual_block(conv3_inv, filters=32, kernel_size=(3, 3))
     
     conv2_inv = tf.keras.layers.Conv2DTranspose(16, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv3_inv)
-    conv2_inv = tf.keras.layers.Add([conv2, conv2_inv])
+    conv2_inv = tf.keras.layers.Add()([conv2, conv2_inv])
     conv2_inv = residual_block(conv2_inv, filters=16, kernel_size=(3, 3))
 
     conv1_inv = tf.keras.layers.Conv2DTranspose(8, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv2_inv)
-    conv1_inv = tf.keras.layers.Add([conv1, conv1_inv])
+    conv1_inv = tf.keras.layers.Add()([conv1, conv1_inv])
     conv1_inv = residual_block(conv1_inv, filters=8, kernel_size=(3, 3))
     
     ### Boundary attention map
