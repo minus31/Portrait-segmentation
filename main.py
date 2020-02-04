@@ -70,9 +70,8 @@ class SeerSegmentation():
             except Exception as err: 
                 print(err)
                 print("\n")
+                print("^" * 100)
                 print("Because of the above error model weights have not loaded")
-                self.model.load_weights(self.weight_dir, by_name=True)
-                print("but it is loaded properly")
 
         train_params = {
             'dim': self.input_shape[:2],

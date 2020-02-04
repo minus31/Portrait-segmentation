@@ -2,7 +2,12 @@ import numpy as np
 import tensorflow as tf
 import cv2 
 
-def network_big(input_size, train=True, android=False):
+
+def form_name(name, G_IDX):
+    res = name + "_" + str(G_IDX)[3:9]
+    return res
+
+def network_big(input_size, train=True, android=False):    
     ###########
     # Encoder #
     ###########
@@ -85,13 +90,11 @@ def network_big(input_size, train=True, android=False):
 
     x =tf.keras.layers.SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal')(x)
     
-    with tf.name_scope("temp/") as scope:
-        x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
+    x = tf.keras.layers.PReLU(shared_axes=[1, 2], name="prelu_1111")(x)
         
     x = tf.keras.layers.SeparableConv2D(4, (3, 3), padding='same', depthwise_initializer='he_normal')(x)
     
-    with tf.name_scope("temp/") as scope:
-        x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
+    x = tf.keras.layers.PReLU(shared_axes=[1, 2], name="prelu_1112")(x)
         
     x = tf.keras.layers.Add()([shortcut, x])
     x = tf.keras.layers.Conv2D(1, (1, 1))(x)
@@ -108,28 +111,20 @@ def network_big(input_size, train=True, android=False):
     return model
 
 def residual_block(x, filters, kernel_size=(3, 3)):
+    
     shortcut = x
-    with tf.name_scope("temp/") as scope:
-        x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
+    
+    G_IDX = np.random.randn(1)[0]
+    x = tf.keras.layers.PReLU(shared_axes=[1, 2], name=form_name("prelu_", G_IDX))(x)
         
     x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
     
-    with tf.name_scope("temp/") as scope:
-        x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
+    G_IDX = np.random.randn(1)[0]
+    x = tf.keras.layers.PReLU(shared_axes=[1, 2], name=form_name("prelu_", G_IDX))(x)
         
     x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
     x = tf.keras.layers.Add()([shortcut, x])
     return x
-
-
-# def residual_block(x, filters, kernel_size=(3, 3)):
-#     shortcut = x
-#     x = ReLU()(x)
-#     x = SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
-#     x = Activation('relu')(x)
-#     x = SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
-#     x = add([shortcut, x])
-#     return x
 
 
 def network_small(input_size, train=True, android=False):
