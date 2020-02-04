@@ -64,7 +64,7 @@ class SeerSegmentation():
 
         if self.finetune:
             try : 
-                self.model.load_weights(self.weight_dir, by_name=True)
+                self.model.load_weights(self.weight_dir, by_name=False)
                 print('load pre-trained model weights')
 
             except Exception as err: 

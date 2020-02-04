@@ -12,7 +12,7 @@ This project is Keras implemented Portrait segmentation model.
 
 * **Fine-Tuning**
 
-`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models/mattingnet/' --weight_dir="./trained_models/mattingnet/20200202/04-0.39.h5.h5" --train=True --finetune=True --convert=False --android=False --model_size="big"`
+`python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models/mattingnet/' --weight_dir="./trained_models/mattingnet/20200202/490-0.12.h5" --train=True --finetune=True --convert=False --android=False --model_size="big"`
 
 * **light model Fine-Tuning**
 
