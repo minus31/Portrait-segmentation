@@ -8,7 +8,7 @@ def network_big(input_size, train=True, android=False):
     ###########
     ## 1st line
     if android:
-        inputs = tf.kears.layers.Input(input_size)
+        inputs = tf.keras.layers.Input(input_size)
         # for android 
         inputs_s = tf.keras.layers.Lambda(lambda x: x[:, :, :, :3])(inputs)
         conv1 = tf.keras.layers.Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs_s)
@@ -84,9 +84,15 @@ def network_big(input_size, train=True, android=False):
     shortcut = x
 
     x =tf.keras.layers.SeparableConv2D(3, (3, 3), padding='same', depthwise_initializer='he_normal')(x)
-    x = tf.keras.layers.PReLU()(x)
+    
+    with tf.name_scope("temp/") as scope:
+        x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
+        
     x = tf.keras.layers.SeparableConv2D(4, (3, 3), padding='same', depthwise_initializer='he_normal')(x)
-    x = tf.keras.layers.PReLU()(x)
+    
+    with tf.name_scope("temp/") as scope:
+        x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
+        
     x = tf.keras.layers.Add()([shortcut, x])
     x = tf.keras.layers.Conv2D(1, (1, 1))(x)
     
@@ -103,9 +109,14 @@ def network_big(input_size, train=True, android=False):
 
 def residual_block(x, filters, kernel_size=(3, 3)):
     shortcut = x
-    x = tf.keras.layers.PReLU()(x)
+    with tf.name_scope("temp/") as scope:
+        x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
+        
     x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
-    x = tf.keras.layers.PReLU()(x)
+    
+    with tf.name_scope("temp/") as scope:
+        x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
+        
     x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
     x = tf.keras.layers.Add()([shortcut, x])
     return x
@@ -177,9 +188,9 @@ def network_small(input_size, train=True, android=False):
     shortcut = x
 
     x = tf.keras.layers.SeparableConv2D(16, (3, 3), padding='same', depthwise_initializer='he_normal')(x)
-    x = tf.keras.layers.PReLU()(x)
+    x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
     x = tf.keras.layers.SeparableConv2D(12, (3, 3), padding='same', depthwise_initializer='he_normal')(x)
-    x = tf.keras.layers.PReLU()(x)
+    x = tf.keras.layers.PReLU(shared_axes=[1, 2])(x)
 
     x = tf.keras.layers.Add()([shortcut, x])
 
@@ -194,71 +205,3 @@ def network_small(input_size, train=True, android=False):
         model = tf.keras.models.Model(inputs=inputs, outputs=out)
 
     return model
-
-
-
-
-
-######## NOT USED BUT REMAINED ########
-# def compute_gredient(src, color=True):
-#     # if color :
-#     #     GX = tf.constant(np.array([[[1,1,1], [0,0,0], [-1,-1,-11]],
-#     #                            [[2, 2, 2], [0,0,0], [-2,-2,-2]],
-#     #                            [[1,1,1], [0,0,0] ,[-1,-1,-1]]]), tf.float32)
-
-#     #     GY = tf.constant(np.array([[[1,1,1], [2, 2, 2], [1,1,1]],
-#     #                             [[0,0,0], [0,0,0], [0,0,0]],
-#     #                             [[-1,-1,-1], [-2,-2,-2],[-1,-1,-1]]]), tf.float32)
-
-#     #     GX = tf.reshape(GX, (3,3,3,1))
-#     #     GY = tf.reshape(GY, (3,3,3,1))
-
-#     # else : 
-#     #     GX = tf.constant(np.array([[1, 0, -1],
-#     #                             [2, 0, -2],
-#     #                             [1, 0 ,-1]]), tf.float32)
-
-#     #     GY = tf.constant(np.array([[1, 2, 1],
-#     #                             [0, 0, 0],
-#     #                             [-1, -2,-1]]), tf.float32)
-    
-#     #     GX = tf.reshape(GX, (3,3,1,1))
-#     #     GY = tf.reshape(GY, (3,3,1,1))
-#     GX = tf.constant(np.array([[1, 0, -1],
-#                                 [2, 0, -2],
-#                                 [1, 0 ,-1]]), tf.float32)
-
-#     GY = tf.constant(np.array([[1, 2, 1],
-#                             [0, 0, 0],
-#                             [-1, -2,-1]]), tf.float32)
-
-#     GX = tf.reshape(GX, (3,3,1,1))
-#     GY = tf.reshape(GY, (3,3,1,1))
-
-#     if src.shape[-1] > 1:
-#         src = tf.reduce_mean(src, axis=-1)
-#         src = tf.expand_dims(src, axis=-1)
-
-#     X_g = tf.nn.conv2d(src, GX, padding="SAME")
-#     Y_g = tf.nn.conv2d(src, GY, padding="SAME")
-
-#     M = tf.sqrt(tf.add(tf.pow(X_g, 2), tf.pow(Y_g, 2)))
-
-#     nu_x = X_g / M 
-#     nu_y = Y_g / M
-#     return M, nu_x, nu_y
-
-# def refine_loss(y_pred, input_, boundary):
-
-#     M_img, nuX_img, nuY_img = compute_gredient(input_, color=True)
-
-#     M_pred, nuX_pred, nuY_pred = compute_gredient(y_pred, color=False)
-
-#     Lcos = tf.add(1., -1 * tf.abs(tf.add(tf.multiply(nuX_img, nuX_pred), tf.multiply(nuY_img, nuY_pred)))) * M_pred
-
-#     Lmag = tf.maximum(tf.add(1.5 * M_img, -1. * M_pred), 0)
-
-#     L_refine = tf.multiply(tf.add(tf.multiply(Lcos, 0.5), tf.multiply(Lmag, 0.5)), boundary)
-#     # res = tf.reduce_mean(L_refine[L_refine > 0], axis=-1)
-#     # res = tf.reshape(res, (-1, 1))
-#     return L_refine
