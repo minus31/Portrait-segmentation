@@ -118,7 +118,7 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
             norm_mask = cv2.resize(norm_mask, (norm_img.shape[1]//self.output_div, norm_img.shape[0]//self.output_div))
             norm_dil = cv2.resize(norm_dil, (norm_img.shape[1]//self.output_div, norm_img.shape[0]//self.output_div))
 
-        return norm_img, norm_mask, norm_dil
+        return norm_img, np.expand_dims(norm_mask, axis=-1), np.expand_dims(norm_dil, axis=-1)
 
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples'
