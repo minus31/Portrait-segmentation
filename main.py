@@ -10,7 +10,6 @@ from metrics import *
 from network import *
 
 import keras
-from keras.callbacks import ReduceLROnPlateau
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -118,8 +117,10 @@ class SeerSegmentation():
                       metrics={"output" : [iou_coef, "mse"]})
 
         """ Callback """
-        monitor = 'loss'
-        reduce_lr = ReduceLROnPlateau(monitor=monitor, patience=3)
+        monitor = 'val_loss'
+        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor=monitor, patience=3)
+        """Callback for Tensorboard"""
+        tb = keras.callbacks.TensorBoard(log_dir="./logs/", update_freq='batch')
         """Callback for save Checkpoints"""
         mc = keras.callbacks.ModelCheckpoint(os.path.join(self.checkpoint_path, '{epoch:02d}-{val_loss:.2f}.h5'), 
                                                 verbose=1, 
@@ -139,7 +140,7 @@ class SeerSegmentation():
                                       validation_steps = STEP_SIZE_VAL,
                                       initial_epoch=epoch,
                                       epochs=epoch + 1,
-                                      callbacks=[reduce_lr, mc],
+                                      callbacks=[reduce_lr, tb, mc],
                                       verbose=1,
                                       shuffle=True)
             t2 = time.time()
