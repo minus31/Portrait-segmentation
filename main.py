@@ -134,7 +134,7 @@ class SeerSegmentation():
             t2 = time.time()
             print(res.history)
 
-            model_name = os.path.join(self.checkpoint_path, str(epoch + 1) + "_" + np.round(res.history['val_loss'][0], 2) + ".h5")
+            model_name = os.path.join(self.checkpoint_path, str(epoch + 1) + "_" + str(np.round(res.history['val_loss'][0], 2)) + ".h5")
             self.model.save_weights(model_name)
             print(f"Model saved with name {model_name}")
 
