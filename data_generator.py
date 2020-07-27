@@ -115,8 +115,8 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         norm_mask = mask / 255.
         norm_dil = dil / 255. 
         if self.output_div != 1:
-            norm_mask = cv2.resize(norm_mask, (norm_img.shape[1]//self.output_div, norm_img[0].shape//self.output_div))
-            norm_dil = cv2.resize(norm_dil, (norm_img.shape[1]//self.output_div, norm_img[0].shape//self.output_div))
+            norm_mask = cv2.resize(norm_mask, (norm_img.shape[1]//self.output_div, norm_img.shape[0]//self.output_div))
+            norm_dil = cv2.resize(norm_dil, (norm_img.shape[1]//self.output_div, norm_img.shape[0]//self.output_div))
 
         return norm_img, norm_mask, norm_dil
 
