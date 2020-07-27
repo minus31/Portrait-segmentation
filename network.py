@@ -12,14 +12,12 @@ def network_big(input_size, train=True, android=False):
         inputs = tf.keras.layers.Input(input_size)
         # for android 
         inputs_s = tf.keras.layers.Lambda(lambda x: x[:, :, :, :3])(inputs)
-        conv1 = tf.keras.layers.Conv2D(8, (5, 5), strides=(2, 2), padding='same', kernel_initializer='he_normal')(inputs_s)
+        conv1 = tf.keras.layers.Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs_s)
     else:
         inputs = tf.keras.layers.Input(input_size)
-        conv1 = tf.keras.layers.Conv2D(8, (5, 5), strides=(2, 2), padding='same', kernel_initializer='he_normal')(inputs)
+        conv1 = tf.keras.layers.Conv2D(8, (3, 3), padding='same', kernel_initializer='he_normal')(inputs)
     
     conv1 = residual_block(conv1, filters=8, kernel_size=(3, 3))
-    conv1 = tf.keras.layers.Conv2D(8, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal', name="Additional_conv")(conv1)
-    conv1 = residual_block_withName(conv1, filters=8, kernel_size=(3, 3), name="residual_block_withName")
 
     ## 2nd line
     conv2 = tf.keras.layers.Conv2D(32, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv1)
@@ -96,8 +94,11 @@ def network_big(input_size, train=True, android=False):
         
     x = tf.keras.layers.Add()([shortcut, x])
     x = tf.keras.layers.Conv2D(1, (1, 1))(x)
-    
 
+    # just for down sampling 
+    x = tf.keras.layers.Conv2D(3, (3, 3), strides=(2, 2), name="just_for_downsampling1")(x)
+    x = tf.keras.layers.Conv2D(1, (3, 3), strides=(2, 2), name="just_for_downsampling2")(x)
+    
     if train:
         out = tf.keras.layers.Activation('sigmoid', name='output')(x)
         model = tf.keras.models.Model(inputs=inputs, outputs=[out, ba])
@@ -107,6 +108,7 @@ def network_big(input_size, train=True, android=False):
         model = tf.keras.models.Model(inputs=inputs, outputs=out)
 
     return model
+
 
 def residual_block(x, filters, kernel_size=(3, 3)):
     
@@ -122,22 +124,6 @@ def residual_block(x, filters, kernel_size=(3, 3)):
         
     x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal')(x)
     x = tf.keras.layers.Add()([shortcut, x])
-    return x
-
-
-def residual_block_withName(x, filters, kernel_size=(3, 3), name=""):
-    
-    shortcut = x
-
-    x = tf.keras.layers.PReLU(shared_axes=[1, 2], name=name+"_prelu_1")(x)
-        
-    x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal', name=name+"_sep_conv_1")(x)
-
-    x = tf.keras.layers.PReLU(shared_axes=[1, 2], name=name+"_prelu_2")(x)
-        
-    x = tf.keras.layers.SeparableConv2D(filters, kernel_size, padding='same', depthwise_initializer='he_normal', name=name+"_sep_conv_2")(x)
-
-    x = tf.keras.layers.Add(name=name+"_add_1")([shortcut, x])
     return x
 
 
@@ -214,3 +200,4 @@ def network_small(input_size, train=True, android=False):
         model = tf.keras.models.Model(inputs=inputs, outputs=out)
 
     return model
+

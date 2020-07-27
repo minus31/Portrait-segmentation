@@ -103,9 +103,9 @@ class SeerSegmentation():
 
         opt = tf.keras.optimizers.Adam(lr=self.lr)
 
-        # # Freeze parts of network
-        # for layer in self.model.layers[:-7]:
-        #     layer.trainable = False
+        # Freeze parts of network
+        for layer in self.model.layers[:-3]:
+            layer.trainable = False
 
         self.model.compile(
                       loss={"output" : ce_dice_focal_combined_loss,
