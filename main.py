@@ -19,7 +19,7 @@ def get_current_day():
 
 ## setting seed
 np.random.seed(7777)
-tf.random.set_seed(7777)
+# tf.random.set_seed(7777)
 
 class SeerSegmentation():
 
@@ -64,7 +64,7 @@ class SeerSegmentation():
 
         if self.finetune:
             try : 
-                self.model.load_weights(self.weight_dir, by_name=False)
+                self.model.load_weights(self.weight_dir, by_name=True)
                 print('load pre-trained model weights')
 
             except Exception as err: 
@@ -80,6 +80,7 @@ class SeerSegmentation():
             'shuffle': True,
             'augment': True,
             'train':True,
+            'output_div':4,
         }
 
         test_params = {
@@ -89,6 +90,7 @@ class SeerSegmentation():
             'shuffle': False,
             'augment': False,
             'train':False,
+            'output_div':4,
         }
         
         img_paths = self.img_paths
@@ -220,7 +222,7 @@ if __name__ == '__main__':
     args.add_argument('--img_path', type=str, default="")
     args.add_argument('--tflite_name', type=str, default="")
 
-    args.add_argument('--train', type=bool, default=False)
+    args.add_argument('--train', type=bool, default=True)
     args.add_argument('--finetune', type=bool, default=False)
     args.add_argument('--infer_single_img', type=bool, default=False)
     args.add_argument('--convert', type=bool, default=False)

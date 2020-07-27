@@ -32,7 +32,7 @@ def get_edge(mask):
 class DataGeneratorMatting(tf.keras.utils.Sequence):
     'Generate data for Keras'
 
-    def __init__(self, list_IDs, batch_size=32, dim=(512, 512), n_channels=3, shuffle=True, augment=False, train=True):
+    def __init__(self, list_IDs, batch_size=32, dim=(512, 512), n_channels=3, shuffle=True, augment=False, train=True, output_div=1):
         'Initialization'
         self.dim = dim
         self.batch_size = batch_size
@@ -42,6 +42,7 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         self.augment = augment
         self.on_epoch_end()
         self.train = train
+        self.output_div = output_div
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -113,6 +114,9 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         norm_img = image_preprocess(img)
         norm_mask = mask / 255.
         norm_dil = dil / 255. 
+        if self.output_div != 1:
+            norm_mask = cv2.resize(norm_mask, (norm_img[1]//self.output_div, norm_img[0]//self.output_div))
+            norm_dil = cv2.resize(norm_dil, (norm_img[1]//self.output_div, norm_img[0]//self.output_div))
 
         return norm_img, norm_mask, norm_dil
 
@@ -120,8 +124,8 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         'Generates data containing batch_size samples'
         # Initialization
         X = np.empty((self.batch_size, self.dim[0], self.dim[1], self.n_channels))
-        y = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
-        b = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
+        y = np.empty((self.batch_size, self.dim[0]//self.output_div, self.dim[1]//self.output_div, 1))
+        b = np.empty((self.batch_size, self.dim[0]//self.output_div, self.dim[1]//self.output_div, 1))
         
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):

@@ -8,7 +8,6 @@ def resize(img, shape):
     h, w = shape
     return cv2.resize(img, (w, h))
 
-
 def scale(img):
     """
     scaling 

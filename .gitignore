@@ -1,6 +1,9 @@
 # Mac OS
 .DS_Store
 
+# mlmodel s
+mlmodel
+
 #trained Models 
 trained_models/ 
 

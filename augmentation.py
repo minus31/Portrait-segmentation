@@ -16,7 +16,6 @@ def random_activate(aug_func):
         else:
             # print("NOT transformed")
             return identity_img(*args, **kwargs)
-
     return wrapper
 
 def identity_img(img, mask, *args, **kwargs) :
