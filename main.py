@@ -66,7 +66,7 @@ class SeerSegmentation():
 
         if self.finetune:
             try : 
-                self.model.load_weights(self.weight_dir, by_name=True)
+                self.model.load_weights(self.weight_dir, by_name=False)
                 print('\nload pre-trained model weights\n')
 
             except Exception as err: 
@@ -106,8 +106,8 @@ class SeerSegmentation():
         opt = tf.keras.optimizers.Adam(lr=self.lr)
 
         # Freeze parts of network
-        for layer in self.model.layers[:-3]:
-            layer.trainable = False
+        # for layer in self.model.layers[:-3]:
+        #     layer.trainable = False
 
         self.model.compile(
                       loss={"output" : ce_dice_focal_combined_loss,
@@ -134,7 +134,7 @@ class SeerSegmentation():
             t2 = time.time()
             print(res.history)
 
-            model_name = os.path.join(self.checkpoint_path, str(epoch + 1) + ".h5")
+            model_name = os.path.join(self.checkpoint_path, str(epoch + 1) + "_" + np.round(res.history['val_loss'][0], 2) + ".h5")
             self.model.save_weights(model_name)
             print(f"Model saved with name {model_name}")
 
