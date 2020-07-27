@@ -9,6 +9,8 @@ from data_generator import DataGeneratorMatting
 from metrics import *
 from network import *
 
+import keras
+
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -65,7 +67,7 @@ class SeerSegmentation():
         if self.finetune:
             try : 
                 self.model.load_weights(self.weight_dir, by_name=True)
-                print('load pre-trained model weights')
+                print('\nload pre-trained model weights\n')
 
             except Exception as err: 
                 print(err)
@@ -115,12 +117,12 @@ class SeerSegmentation():
                       metrics={"output" : [iou_coef, "mse"]})
 
         """ Callback """
-        monitor = 'lr'
-        reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor=monitor, patience=3)
+        monitor = 'loss'
+        reduce_lr = ReduceLROnPlateau(monitor=monitor, patience=3)
         """Callback for save Checkpoints"""
-        mc = tf.keras.callbacks.ModelCheckpoint(os.path.join(self.checkpoint_path, '{epoch:02d}-{loss:.2f}.h5'), 
+        mc = keras.callbacks.ModelCheckpoint(os.path.join(self.checkpoint_path, '{epoch:02d}-{val_loss:.2f}.h5'), 
                                                 verbose=1, 
-                                                monitor='loss',
+                                                monitor='val_loss',
                                                 save_weights_only=True)
 
         """ Training loop """
@@ -145,14 +147,14 @@ class SeerSegmentation():
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
             # checkpoint마다 id list를 섞어서 train, Val generator를 새로 생성
-            if (epoch + 1) % self.checkpoint == 0:
+            # if (epoch + 1) % self.checkpoint == 0:
                 # test_example(self.model, "./result_sample/" + str(epoch) + ".png")
-                print("shuffles the datasets")
-                self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
-                self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
+                # print("shuffles the datasets")
+                # self.train_img_paths = np.random.choice(img_paths, int(img_paths.shape[0] * self.val_ratio), replace=False)
+                # self.test_img_paths = np.setdiff1d(img_paths, self.train_img_paths)
 
-                train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
-                test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
+                # train_gen = DataGeneratorMatting(self.train_img_paths, **train_params)
+                # test_gen = DataGeneratorMatting(self.test_img_paths, **test_params)
 
                 # self.model.save_weights(os.path.join(self.checkpoint_path, str(epoch + 1) + ".h5"))
                 # print("Model saved with name {} ".format(epoch + 1))
