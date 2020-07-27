@@ -96,8 +96,8 @@ def network_big(input_size, train=True, android=False):
     x = tf.keras.layers.Conv2D(1, (1, 1))(x)
 
     # just for down sampling 
-    x = tf.keras.layers.Conv2D(3, (3, 3), strides=(2, 2), name="just_for_downsampling1")(x)
-    x = tf.keras.layers.Conv2D(1, (3, 3), strides=(2, 2), name="just_for_downsampling2")(x)
+    x = tf.keras.layers.Conv2D(3, (3, 3), strides=(2, 2), padding='same', name="just_for_downsampling1")(x)
+    x = tf.keras.layers.Conv2D(1, (3, 3), strides=(2, 2), padding='same', name="just_for_downsampling2")(x)
     
     if train:
         out = tf.keras.layers.Activation('sigmoid', name='output')(x)

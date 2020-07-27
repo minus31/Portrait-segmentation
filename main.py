@@ -116,17 +116,6 @@ class SeerSegmentation():
                       optimizer=opt,
                       metrics={"output" : [iou_coef, "mse"]})
 
-        """ Callback """
-        monitor = 'val_loss'
-        reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor=monitor, patience=3)
-        """Callback for Tensorboard"""
-        tb = keras.callbacks.TensorBoard(log_dir="./logs/", update_freq='batch')
-        """Callback for save Checkpoints"""
-        mc = keras.callbacks.ModelCheckpoint(os.path.join(self.checkpoint_path, '{epoch:02d}-{val_loss:.2f}.h5'), 
-                                                verbose=1, 
-                                                monitor='val_loss',
-                                                save_weights_only=True)
-
         """ Training loop """
         STEP_SIZE_TRAIN = len(self.train_img_paths) // train_gen.batch_size
         STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
@@ -140,13 +129,18 @@ class SeerSegmentation():
                                       validation_steps = STEP_SIZE_VAL,
                                       initial_epoch=epoch,
                                       epochs=epoch + 1,
-                                      callbacks=[reduce_lr, tb, mc],
                                       verbose=1,
                                       shuffle=True)
             t2 = time.time()
-            # print(res.history)
+            print(res.history)
+
+            model_name = os.path.join(self.checkpoint_path, str(epoch + 1) + ".h5")
+            self.model.save_weights(model_name)
+            print(f"Model saved with name {model_name} "
 
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
+
+
 
             # checkpoint마다 id list를 섞어서 train, Val generator를 새로 생성
             # if (epoch + 1) % self.checkpoint == 0:
