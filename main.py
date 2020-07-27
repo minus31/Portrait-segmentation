@@ -136,7 +136,7 @@ class SeerSegmentation():
 
             model_name = os.path.join(self.checkpoint_path, str(epoch + 1) + ".h5")
             self.model.save_weights(model_name)
-            print(f"Model saved with name {model_name} "
+            print(f"Model saved with name {model_name}")
 
             print('Training time for one epoch : %.1f' % ((t2 - t1)))
 
