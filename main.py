@@ -115,14 +115,12 @@ class SeerSegmentation():
                       metrics={"output" : [iou_coef, "mse"]})
 
         """ Callback """
-        monitor = 'loss'
+        monitor = 'lr'
         reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor=monitor, patience=3)
-        """Callback for Tensorboard"""
-        tb = tf.keras.callbacks.TensorBoard(log_dir="./logs/", update_freq='batch')
         """Callback for save Checkpoints"""
-        mc = tf.keras.callbacks.ModelCheckpoint(os.path.join(self.checkpoint_path, '{epoch:02d}-{val_loss:.2f}.h5'), 
+        mc = tf.keras.callbacks.ModelCheckpoint(os.path.join(self.checkpoint_path, '{epoch:02d}-{loss:.2f}.h5'), 
                                                 verbose=1, 
-                                                monitor='val_loss',
+                                                monitor='loss',
                                                 save_weights_only=True)
 
         """ Training loop """
@@ -138,7 +136,7 @@ class SeerSegmentation():
                                       validation_steps = STEP_SIZE_VAL,
                                       initial_epoch=epoch,
                                       epochs=epoch + 1,
-                                      callbacks=[reduce_lr, tb, mc],
+                                      callbacks=[reduce_lr, mc],
                                       verbose=1,
                                       shuffle=True)
             t2 = time.time()
