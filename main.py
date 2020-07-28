@@ -82,7 +82,6 @@ class SeerSegmentation():
             'shuffle': True,
             'augment': True,
             'train':True,
-            'output_div':output_div,
         }
 
         test_params = {
@@ -92,7 +91,6 @@ class SeerSegmentation():
             'shuffle': False,
             'augment': False,
             'train':False,
-            'output_div':output_div,
         }
         
         img_paths = self.img_paths

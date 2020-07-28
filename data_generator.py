@@ -114,10 +114,6 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         norm_img = image_preprocess(img)
         norm_mask = mask / 255.
         norm_dil = dil / 255. 
-        if self.output_div != 1:
-            norm_mask = cv2.resize(norm_mask, (norm_img.shape[1]//self.output_div, norm_img.shape[0]//self.output_div))
-
-            return norm_img, np.expand_dims(norm_mask, axis=-1), norm_dil
 
         return norm_img, norm_mask, norm_dil
 
@@ -125,7 +121,7 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         'Generates data containing batch_size samples'
         # Initialization
         X = np.empty((self.batch_size, self.dim[0], self.dim[1], self.n_channels))
-        y = np.empty((self.batch_size, self.dim[0]//self.output_div, self.dim[1]//self.output_div, 1))
+        y = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
         b = np.empty((self.batch_size, self.dim[0], self.dim[1], 1))
         
         # Generate data
