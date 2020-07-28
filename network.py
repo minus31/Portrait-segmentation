@@ -33,7 +33,7 @@ def network_big(input_size, train=True, android=False):
     conv4 = residual_block(conv4, filters=128, kernel_size=(3, 3))
 
     ## 5th line
-    conv5 = tf.keras.layers.Conv2D(128, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv4)
+    conv5 = tf.keras.layers.Conv2D(128, (3, 3), strides=(2, 2), padding='valid', kernel_initializer='he_normal')(conv4)
     conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
     conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
     conv5 = residual_block(conv5, filters=128, kernel_size=(3, 3))
@@ -46,6 +46,7 @@ def network_big(input_size, train=True, android=False):
     ###########
     ## 4th-inverse line
     conv4_inv = tf.keras.layers.Conv2DTranspose(128, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv5)
+    conv4_inv = tf.keras.layers.ZeroPadding2D(padding=((0, 1), (0, 1)))(conv4_inv)
     conv4_inv = tf.keras.layers.Add()([conv4, conv4_inv])
     conv4_inv = residual_block(conv4_inv, filters=128, kernel_size=(3, 3))
     conv4_inv = residual_block(conv4_inv, filters=128, kernel_size=(3, 3))
@@ -53,6 +54,7 @@ def network_big(input_size, train=True, android=False):
 
     ## 3rd-inverse line
     conv3_inv = tf.keras.layers.Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv4_inv)
+    conv3_inv = tf.keras.layers.Lambda(lambda x: x[:, :-1, :-1])(conv3_inv)
     conv3_inv = tf.keras.layers.Add()([conv3, conv3_inv])
     conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
     conv3_inv = residual_block(conv3_inv, filters=64, kernel_size=(3, 3))
@@ -60,6 +62,7 @@ def network_big(input_size, train=True, android=False):
 
     ## 2nd-inverse line
     conv2_inv = tf.keras.layers.Conv2DTranspose(32, (3, 3), strides=(2, 2), padding='same', kernel_initializer='he_normal')(conv3_inv)
+    # conv2 = tf.keras.layers.ZeroPadding2D(padding=((3, 3), (3, 3)))(conv2)
     conv2_inv = tf.keras.layers.Add()([conv2, conv2_inv])
     conv2_inv = residual_block(conv2_inv, filters=32, kernel_size=(3, 3))
     conv2_inv = residual_block(conv2_inv, filters=32, kernel_size=(3, 3))
