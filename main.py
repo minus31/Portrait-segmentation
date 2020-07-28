@@ -66,7 +66,7 @@ class SeerSegmentation():
 
         if self.finetune:
             try : 
-                self.model.load_weights(self.weight_dir, by_name=False)
+                self.model.load_weights(self.weight_dir, by_name=True)
                 print('\nload pre-trained model weights\n')
 
             except Exception as err: 
@@ -74,7 +74,7 @@ class SeerSegmentation():
                 print("\n")
                 print("^" * 100)
                 print("Because of the above error model weights have not loaded")
-
+        output_div = 1.
         train_params = {
             'dim': self.input_shape[:2],
             'batch_size': self.batch_size,
@@ -82,7 +82,7 @@ class SeerSegmentation():
             'shuffle': True,
             'augment': True,
             'train':True,
-            'output_div':4,
+            'output_div':output_div,
         }
 
         test_params = {
@@ -92,7 +92,7 @@ class SeerSegmentation():
             'shuffle': False,
             'augment': False,
             'train':False,
-            'output_div':4,
+            'output_div':output_div,
         }
         
         img_paths = self.img_paths
@@ -205,7 +205,7 @@ if __name__ == '__main__':
     args = argparse.ArgumentParser()
 
     # hyperparameters
-    args.add_argument('--input_shape', type=int, default=256)
+    args.add_argument('--input_shape', type=int, default=196)
     args.add_argument('--nb_epoch', type=int, default=1000)
     args.add_argument('--batch_size', type=int, default=32)
     args.add_argument('--lr', type=float, default=0.00045)
