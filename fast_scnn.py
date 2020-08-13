@@ -155,13 +155,13 @@ def fastSCNN(input_shape=(256,192, 3), train=True):
     down = learningToDownsample(input_, dw_ch1=32, dw_ch2=48, out_ch=64)
     gf = globalFeatureExtractor(down)
     fus = featureFusionModule(down, gf, out_ch=128)
-    cls = classifier(fus, num_classes=1, train=train)
+    cls_ = classifier(fus, num_classes=1, train=train)
     if train:
-        cls, boundary = cls
-        output_c = tf.keras.layers.Lambda(lambda z:bilinear_interpolation(z, input_shape[:2]))(cls)
-        output_b = tf.keras.layers.Lambda(lambda z:bilinear_interpolation(z, input_shape[:2]))(boundary)
+        cls_, boundary = cls_
+        output_c = tf.keras.layers.Lambda(lambda z:bilinear_interpolation(z, input_shape[:2]), name="output")(cls_)
+        output_b = tf.keras.layers.Lambda(lambda z:bilinear_interpolation(z, input_shape[:2]), name="boundary_attention")(boundary)
         output = [output_c, output_b]
     else: 
-        output = tf.keras.layers.Lambda(lambda z:bilinear_interpolation(z, input_shape[:2]))(cls)
+        output = tf.keras.layers.Lambda(lambda z:bilinear_interpolation(z, input_shape[:2]), name="output")(cls_)
     return tf.keras.models.Model(input_, output)
     
