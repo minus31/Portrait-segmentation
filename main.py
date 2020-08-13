@@ -117,7 +117,7 @@ class SeerSegmentation():
             print('\nTraining time for one epoch : %.1f' % ((t2 - t1)))
 
             if epoch % 50 == 0:
-                self.lr = self.lr * 0.8
+                self.lr = self.lr * 0.5
 
         print("\nEntire training time has been taken {} ", t2 - t0)
 
