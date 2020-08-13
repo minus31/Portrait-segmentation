@@ -46,7 +46,7 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         use_rot_90 = img.shape[0] < img.shape[1]
-        
+
         if use_rot_90:
             img = rotate90_img(img)
         img = cv2.resize(img, (w, h))
@@ -78,7 +78,7 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         dil = dil[:,:,np.newaxis]
 
         norm_img = image_preprocess(img)
-        if output_div == 1:
+        if self.output_div == 1:
             norm_mask = mask / 255.
             norm_dil = dil / 255.
         else: 
@@ -130,9 +130,9 @@ def get_edge(mask):
     return dil
 
 def rotate90_img(img):
-    theta = 3 * np.pi / 2
-    R = np.array([
-                    [np.cos(theta), -np.sin(theta)],
-                    [np.sin(theta), np.cos(theta)]
-                ])
+    # theta = 3 * np.pi / 2
+    # R = np.array([
+    #                 [np.cos(theta), -np.sin(theta)],
+    #                 [np.sin(theta), np.cos(theta)]
+    #             ])
     return np.rot90(img)
