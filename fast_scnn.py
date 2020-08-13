@@ -24,8 +24,8 @@ import numpy as np
 from tensorflow.keras.mixed_precision import experimental as mixed_precision
 
 # for mixed precision
-policy = mixed_precision.Policy('mixed_float16')
-mixed_precision.set_policy(policy)
+# policy = mixed_precision.Policy('mixed_float16')
+# mixed_precision.set_policy(policy)
 
 def _ConvBNReLU(x, out_ch, k_size=3, stride=1, padding="same", **kwargs):
     # add regularization layers and initializer
