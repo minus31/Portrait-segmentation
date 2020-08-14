@@ -15,6 +15,13 @@ def scale(img):
     img = (img - np.array([123.68, 116.779, 103.939])) / np.array([58.393, 57.12, 57.375]) # img = (img - tf.constant([123.68, 116.779, 103.939])) / tf.constant([58.393, 57.12, 57.375])
     return img
 
+def descale(img):
+    """
+    recover from scaling 
+    """
+    img = img * np.array([58.393, 57.12, 57.375]) + np.array([123.68, 116.779, 103.939])
+    return np.uint(img)
+
 def image_preprocess(img, input_shape=None):
 
     if input_shape:

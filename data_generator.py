@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import cv2
-from augmentation import PortraitAugment
+from augmentation import PortraitAugment, aug_seq
 from preprocess import *
 
 class DataGeneratorMatting(tf.keras.utils.Sequence):
@@ -18,6 +18,8 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         self.output_div = output_div
 
         self.on_epoch_end()
+
+        self.seq = aug_seq()
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -44,7 +46,7 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         h, w = self.dim
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
+        
         use_rot_90 = img.shape[0] < img.shape[1]
 
         if use_rot_90:
@@ -60,22 +62,26 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         else: 
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
             if use_rot_90:
-                mask = rotate90_img(mask)
+                mask = rotate90_img(mask)    
             mask = cv2.resize(mask, (w, h))
 
         if self.augment:
-            if blank_token:
-                img, mask = aug.augment(img, mask, aug_params, mask_transform=False)
-            else:
-                img, mask = aug.augment(img, mask, aug_params)
-        
+            no_aug_token = np.random.choice([False, True], p=[0.2, 0.8])
+            if no_aug_token:
+                if blank_token:
+                    # img, mask = aug.augment(img, mask, aug_params, mask_transform=False)
+                    img = self.seq(images=np.expand_dims(img, 0))
+                    img = img[0]
+                else:
+                    # img, mask = aug.augment(img, mask, aug_params)
+                    img, mask = self.seq(images=np.expand_dims(img, 0), segmentation_maps=np.expand_dims(mask, (0, -1)))
+                    img = img[0]
+                    mask = np.squeeze(mask[0], -1)
+
         if blank_token:
             dil = np.zeros_like(mask)
         else: 
             dil = get_edge(mask)
-
-        mask = mask[:,:,np.newaxis]
-        dil = dil[:,:,np.newaxis]
 
         norm_img = image_preprocess(img)
         if self.output_div == 1:
@@ -85,7 +91,7 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
             norm_mask = resize(mask, (img.shape[0] // self.output_div, img.shape[1] // self.output_div)) / 255.
             norm_dil = resize(dil, (img.shape[0] // self.output_div, img.shape[1] // self.output_div)) / 255.
 
-        return norm_img, norm_mask, norm_dil
+        return norm_img, np.expand_dims(norm_mask, -1), np.expand_dims(norm_dil, -1)
 
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples'
@@ -130,9 +136,4 @@ def get_edge(mask):
     return dil
 
 def rotate90_img(img):
-    # theta = 3 * np.pi / 2
-    # R = np.array([
-    #                 [np.cos(theta), -np.sin(theta)],
-    #                 [np.sin(theta), np.cos(theta)]
-    #             ])
     return np.rot90(img)
