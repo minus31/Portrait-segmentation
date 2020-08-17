@@ -25,30 +25,6 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras.mixed_precision import experimental as mixed_precision
 
-
-"""
-I will use input_shape with "224, 168"
-
-FastSCNN 
- - learning to downsample 
- -> global featrue extractor
- - feature_fusion (learning to downsample, global featrue extractor)
- - Classifier (feature_fusion)
- - Interpolation
-"""
-
-"""
-MODULE LIST 
-
-- ConvBNReLU          : conv2d BN Relu
-- DSConv              : depthwise + BN + ReLU + pointwise + BN ReLU
-- DWConv              : Depthwise + BN + ReLU 
-- Linear BottleNeck   : x -> CONVBNRELU  + DWConv + Pointwise + BN -> y + x
-- PyramidPooling      : pool = adaptiveAvgPool2D, conv=CONVBNRELU, upsampling=Interpolation
-
-tf.keras.layers.Activation('relu') -> tf.keras.layers.PReLU(shared_axes=[1, 2]) - 느림. -> swish_activation
-"""
-
 def swish_activation(x):
     sig = tf.keras.layers.Activation("sigmoid")(x)
     out = tf.keras.layers.Multiply()([x, sig])
@@ -192,10 +168,10 @@ def fastSCNN(input_shape=(256,192, 3), train=True):
     cls = classifier(fus, num_classes=1, train=train)
     if train:
         cls, boundary = cls
-        output_c = BilinearInterpolation(input_shape[:2])(cls)
-        output_b = BilinearInterpolation(input_shape[:2])(boundary)
+        output_c = BilinearInterpolation(input_shape[:2], name="output")(cls)
+        output_b = BilinearInterpolation(input_shape[:2], name="boundary_attention")(boundary)
         output = [output_c, output_b]
     else: 
-        output = BilinearInterpolation(input_shape[:2])(cls)
+        output = BilinearInterpolation(input_shape[:2], name="output")(cls)
     return tf.keras.models.Model(input_, output)
     
