@@ -90,7 +90,8 @@ class SeerSegmentation():
 
         output_names = []
         for o in self.model.output:
-            output_names.append(o.name)
+            output_names.append(o.name.split("/")[0])
+        print(output_names)
 
         t0 = time.time()
         for epoch in range(self.nb_epoch):
@@ -113,7 +114,7 @@ class SeerSegmentation():
                                       shuffle=True)
             t2 = time.time()
             print(res.history)
-            
+
             model_name = os.path.join(self.checkpoint_path, str(epoch + 1) + "_" + str(np.round(res.history['val_loss'][0], 2)) + ".h5")
             self.model.save_weights(model_name)
             print(f"\nModel saved with name {model_name}")
