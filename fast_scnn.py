@@ -168,10 +168,10 @@ def fastSCNN(input_shape=(256,192, 3), train=True):
     cls = classifier(fus, num_classes=1, train=train)
     if train:
         cls, boundary = cls
-        output_c = BilinearInterpolation(input_shape[:2], name="output")(cls)
-        output_b = BilinearInterpolation(input_shape[:2], name="boundary_attention")(boundary)
+        output_c = BilinearInterpolation(input_shape[:2])(cls)
+        output_b = BilinearInterpolation(input_shape[:2])(boundary)
         output = [output_c, output_b]
     else: 
-        output = BilinearInterpolation(input_shape[:2], name="output")(cls)
+        output = BilinearInterpolation(input_shape[:2])(cls)
     return tf.keras.models.Model(input_, output)
     

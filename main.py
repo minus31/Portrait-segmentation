@@ -88,15 +88,19 @@ class SeerSegmentation():
         STEP_SIZE_TRAIN = len(self.train_img_paths) // train_gen.batch_size
         STEP_SIZE_VAL = len(self.test_img_paths) // test_gen.batch_size
 
+        output_names = []
+        for o in self.model.output:
+            output_names.append(o.name)
+
         t0 = time.time()
         for epoch in range(self.nb_epoch):
             opt = tf.keras.optimizers.Adam(lr=self.lr)
             self.model.compile(
-                                loss={"output" : ce_dice_focal_combined_loss,
-                                    "boundary_attention" : "binary_crossentropy",},
+                                loss={output_names[0] : ce_dice_focal_combined_loss,
+                                    output_names[1] : "binary_crossentropy",},
                                 loss_weights=[0.8, 0.2],
                                 optimizer=opt,
-                                metrics={"output" : [iou_coef, "mse"]})
+                                metrics={output_names[0] : [iou_coef, "mse"]})
 
             t1 = time.time()
             res = self.model.fit_generator(generator=train_gen,
@@ -109,7 +113,7 @@ class SeerSegmentation():
                                       shuffle=True)
             t2 = time.time()
             print(res.history)
-
+            
             model_name = os.path.join(self.checkpoint_path, str(epoch + 1) + "_" + str(np.round(res.history['val_loss'][0], 2)) + ".h5")
             self.model.save_weights(model_name)
             print(f"\nModel saved with name {model_name}")
