@@ -148,6 +148,7 @@ def classifier(x, num_classes, stride=1, train=True, **kwargs):
     b = tf.keras.layers.Conv2D(num_classes,
                                kernel_size=1, 
                                kernel_initializer='he_normal')(x)
+    b = tf.keras.layers.Activation("sigmoid", dtype='float32')(b)
     
     x = _DSConv(x, 3, stride)
     x = tf.keras.layers.Concatenate()([x, b])
@@ -156,6 +157,7 @@ def classifier(x, num_classes, stride=1, train=True, **kwargs):
     x = tf.keras.layers.Conv2D(num_classes,
                                kernel_size=1, 
                                kernel_initializer='he_normal')(x)
+    x = tf.keras.layers.Activation("sigmoid", dtype='float32')(x)
     if train :
         return x, b
     return x
