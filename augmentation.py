@@ -177,7 +177,7 @@ def aug_seq():
             iaa.Flipud(0.5), 
             sometimes(iaa.CropAndPad(
                 percent=(-0.2, 0.2),
-                pad_mode=ia.ALL,
+                pad_mode="constant",
                 pad_cval=(0, 255)
             )),
             sometimes(iaa.Affine(
@@ -187,9 +187,9 @@ def aug_seq():
                 shear=(-16, 16), 
                 order=[0, 1],
                 cval=(0, 255),
-                mode=ia.ALL 
+                mode="constant" 
             )),
-            sometimes(iaa.PerspectiveTransform(scale=(0.01, 0.2))),
+            
             iaa.SomeOf((0, 1),
             [
                 iaa.CoarseDropout((0.0, 0.05), size_percent=(0.02, 0.25)),

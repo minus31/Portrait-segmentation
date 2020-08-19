@@ -19,8 +19,8 @@ MODULE LIST
 - DWConv              : Depthwise + BN + ReLU 
 - Linear BottleNeck   : x -> CONVBNRELU  + DWConv + Pointwise + BN -> y + x
 - PyramidPooling      : pool = adaptiveAvgPool2D, conv=CONVBNRELU, upsampling=Interpolation
-
 """
+
 import tensorflow as tf 
 import numpy as np
 from tensorflow.keras.mixed_precision import experimental as mixed_precision
@@ -73,10 +73,6 @@ def linearBottlenect(x, out_ch, t=6, stride=1, **kwargs):
         out = x + out
     return out
 
-# def bilinear_interpolation(x, size):
-#     out = tf.compat.v1.image.resize_bilinear(x, size, align_corners=True)
-#     return out
-
 class BilinearInterpolation(tf.keras.layers.Layer):
     def __init__(self, size):
         super(BilinearInterpolation, self).__init__()
@@ -85,14 +81,14 @@ class BilinearInterpolation(tf.keras.layers.Layer):
     def call(self, x):
         self.out = tf.compat.v1.image.resize_bilinear(x, self.size, align_corners=True)
         return self.out
- 
+
 def __pyramid_module(x, pool_size, inter_ch, **kwargs):
     size = x.shape[-3:-1]
     x = tf.keras.layers.AveragePooling2D(pool_size=pool_size)(x)
     x = _ConvBNReLU(x, inter_ch, k_size=1)
     x = BilinearInterpolation(size)(x)
     return x 
-    
+
 def pyramidPooling(x, out_ch, **kwargs):
     inter_ch = x.shape[-1] // 4
     fea1 = __pyramid_module(x, pool_size=1, inter_ch=inter_ch)
@@ -162,7 +158,7 @@ def classifier(x, num_classes, stride=1, train=True, **kwargs):
         return x, b
     return x
 
-def fastSCNN(input_shape=(256,192, 3), train=True):
+def fastSCNN(input_shape=(256, 192, 3), train=True):
     input_ = tf.keras.layers.Input(shape=input_shape)
     down = learningToDownsample(input_, dw_ch1=32, dw_ch2=48, out_ch=64)
     gf = globalFeatureExtractor(down)
