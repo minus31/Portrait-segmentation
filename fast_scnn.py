@@ -173,3 +173,45 @@ def fastSCNN(input_shape=(256, 192, 3), train=True):
         output = BilinearInterpolation(input_shape[:2])(cls)
     return tf.keras.models.Model(input_, output)
     
+
+###################################################################
+
+def classifier_ori(x, num_classes, stride=1, train=True, **kwargs):
+    out_ch = x.shape[-1]
+    x = _DSConv(x, out_ch, stride)
+    x = _DSConv(x, out_ch, stride)
+    x = tf.keras.layers.Dropout(0.1)(x)
+    x = tf.keras.layers.Conv2D(num_classes,
+                               kernel_size=1, 
+                               kernel_initializer='he_normal')(x)
+    x = tf.keras.layers.Activation("sigmoid", dtype='float32')(x)
+    return x
+
+
+def fastSCNN_edition2(input_shape=(256, 192, 3), train=True):
+    input_ = tf.keras.layers.Input(shape=input_shape)
+    down = learningToDownsample(input_, dw_ch1=32, dw_ch2=48, out_ch=64)
+    gf = globalFeatureExtractor(down)
+    fus = featureFusionModule(down, gf, out_ch=128)
+    b = classifier_ori(fus, num_classes=1, train=train)
+    c = classifier_ori(fus, num_classes=1, train=train)
+
+    # input_low = BilinearInterpolation([input_shape[0]//8, input_shape[1]//8])(input_)
+    b_c = tf.keras.layers.Concatenate(axis=-1)([b, c])
+
+    c_out = tf.keras.layers.Conv2D(1,
+                               kernel_size=3,
+                               padding='same',
+                               kernel_initializer='he_normal')(b_c)
+    c_out = tf.keras.layers.Activation('sigmoid')(c_out)
+
+    if train:
+        # output_c = BilinearInterpolation(input_shape[:2])(cls)
+        # output_b = BilinearInterpolation(input_shape[:2])(boundary)
+        output = [b, c, c_out]
+    else: 
+        # output = BilinearInterpolation(input_shape[:2])(c_out)
+        output = c_out
+
+    return tf.keras.models.Model(input_, output)
+    

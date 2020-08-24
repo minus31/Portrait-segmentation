@@ -45,6 +45,11 @@ class SeerSegmentation():
         
         self.weight_dir = config.weight_dir# default=None
 
+        if config.single_gpu:
+            print('\n Specify an GPU \n ')
+            gpu_number = input()
+            os.environ["CUDA_VISIBLE_DEVICES"] = gpu_number
+
         ##############################################
         # self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
         self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15_withBlankDoubled_and_Custom_doubled.npy")
@@ -144,6 +149,7 @@ if __name__ == '__main__':
 
     args.add_argument('--train', type=bool, default=True)
     args.add_argument('--finetune', type=bool, default=False)
+    args.add_argument('--single_gpu', type=bool, default=True)
 
     config = args.parse_args()
 
