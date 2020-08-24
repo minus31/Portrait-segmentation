@@ -166,22 +166,29 @@ def fastSCNN(input_shape=(256, 192, 3), train=True):
     cls = classifier(fus, num_classes=1, train=train)
 
     if train:
-        output_c, output_b = cls
-        # output_c = BilinearInterpolation(input_shape[:2])(cls)
-        # output_b = BilinearInterpolation(input_shape[:2])(boundary)
-        for _ in range(3):
-            output_c = tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=3, strides=2, padding="same")(output_c)
-            output_b = tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=3, strides=2, padding="same")(output_b)
+        cls, boundary = cls
+        output_c = BilinearInterpolation(input_shape[:2])(cls)
+        output_b = BilinearInterpolation(input_shape[:2])(boundary)
 
-        output_c = tf.keras.layers.Activation("sigmoid")(output_c)
-        output_b = tf.keras.layers.Activation("sigmoid")(output_b)
+        output_c = tf.keras.layers.Conv2D(1,
+                                        kernel_size=3, 
+                                        activation='sigmoid',
+                                        padding='same',
+                                        kernel_initializer='he_normal')(output_c)
+
+        output_b = tf.keras.layers.Conv2D(1,
+                                        kernel_size=3,
+                                        activation='sigmoid',
+                                        padding='same',
+                                        kernel_initializer='he_normal')(output_b)
+
         output = [output_c, output_b]
     else: 
-        # output = BilinearInterpolation(input_shape[:2])(cls)
-        output = cls
-        for _ in range(3):
-            output = tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=3, strides=2, padding="same")(output)
-        output = tf.keras.layers.Activation("sigmoid")(output)
+        output = BilinearInterpolation(input_shape[:2])(cls)
+        output = tf.keras.layers.Conv2D(1,
+                                        kernel_size=3, 
+                                        activation='sigmoid',
+                                        kernel_initializer='he_normal')(output)
     return tf.keras.models.Model(input_, output)
     
 
