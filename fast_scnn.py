@@ -164,13 +164,24 @@ def fastSCNN(input_shape=(256, 192, 3), train=True):
     gf = globalFeatureExtractor(down)
     fus = featureFusionModule(down, gf, out_ch=128)
     cls = classifier(fus, num_classes=1, train=train)
+
     if train:
-        cls, boundary = cls
-        output_c = BilinearInterpolation(input_shape[:2])(cls)
-        output_b = BilinearInterpolation(input_shape[:2])(boundary)
+        output_c, output_b = cls
+        # output_c = BilinearInterpolation(input_shape[:2])(cls)
+        # output_b = BilinearInterpolation(input_shape[:2])(boundary)
+        for _ in range(3):
+            output_c = tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=3, strides=2, padding="same")(output_c)
+            output_b = tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=3, strides=2, padding="same")(output_b)
+
+        output_c = tf.keras.layers.Activation("sigmoid")(output_c)
+        output_b = tf.keras.layers.Activation("sigmoid")(output_b)
         output = [output_c, output_b]
     else: 
-        output = BilinearInterpolation(input_shape[:2])(cls)
+        # output = BilinearInterpolation(input_shape[:2])(cls)
+        output = cls
+        for _ in range(3):
+            output = tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=3, strides=2, padding="same")(output)
+        output = tf.keras.layers.Activation("sigmoid")(output)
     return tf.keras.models.Model(input_, output)
     
 
@@ -193,22 +204,30 @@ def fastSCNN_edition2(input_shape=(256, 192, 3), train=True):
     down = learningToDownsample(input_, dw_ch1=32, dw_ch2=48, out_ch=64)
     gf = globalFeatureExtractor(down)
     fus = featureFusionModule(down, gf, out_ch=128)
-    b = classifier_ori(fus, num_classes=1, train=train)
-    c = classifier_ori(fus, num_classes=1, train=train)
-
+    b = classifier_ori(fus, num_classes=1)
+    c = classifier_ori(fus, num_classes=1)
     # input_low = BilinearInterpolation([input_shape[0]//8, input_shape[1]//8])(input_)
     b_c = tf.keras.layers.Concatenate(axis=-1)([b, c])
+    # c_out = tf.keras.layers.Conv2D(1,
+    #                            kernel_size=3,
+    #                            padding='same',
+    #                            kernel_initializer='he_normal')(b_c)
+    # c_out = classifier_ori(b_c, num_classes=1)
+    # c_out = tf.keras.layers.Activation('sigmoid')()
+    c_out = tf.keras.layers.Conv2DTranspose(filters=64, kernel_size=(3, 3), strides=(2, 2), padding="same")(b_c)
+    for _ in range(2):
+        c_out = tf.keras.layers.Conv2DTranspose(filters=32, kernel_size=(3, 3), strides=(2, 2), padding="same")(c_out)
 
     c_out = tf.keras.layers.Conv2D(1,
-                               kernel_size=3,
+                               kernel_size=1,
                                padding='same',
-                               kernel_initializer='he_normal')(b_c)
-    c_out = tf.keras.layers.Activation('sigmoid')(c_out)
+                               activation='sigmoid',
+                               kernel_initializer='he_normal')(c_out)
 
     if train:
-        # output_c = BilinearInterpolation(input_shape[:2])(cls)
-        # output_b = BilinearInterpolation(input_shape[:2])(boundary)
-        output = [b, c, c_out]
+        output_b = BilinearInterpolation(input_shape[:2])(b)
+        output_c = BilinearInterpolation(input_shape[:2])(c)
+        output = [output_b, output_c, c_out]
     else: 
         # output = BilinearInterpolation(input_shape[:2])(c_out)
         output = c_out

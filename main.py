@@ -48,7 +48,7 @@ class SeerSegmentation():
         if config.single_gpu:
             print('\n Specify an GPU \n ')
             gpu_number = input()
-            os.environ["CUDA_VISIBLE_DEVICES"] = gpu_number
+            os.environ["CUDA_VISIBLE_DEVICES"] = gpu_number.strip()
 
         ##############################################
         # self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
@@ -60,7 +60,7 @@ class SeerSegmentation():
     def train(self):
         self.model = self.build_model()
         if self.finetune:
-            self.model.load_weights(self.weight_dir, by_name=False)
+            self.model.load_weights(self.weight_dir, by_name=True)
             print('\nload pre-trained model weights\n')
         
         train_params = {
@@ -126,8 +126,8 @@ class SeerSegmentation():
 
             print('\nTraining time for one epoch : %.1f' % ((t2 - t1)))
 
-            # if epoch % 50 == 0:
-            #     self.lr = self.lr * 0.5
+            if epoch % 100 == 0:
+                self.lr = self.lr * 0.5
 
         print("\nEntire training time has been taken {} ", t2 - t0)
 
