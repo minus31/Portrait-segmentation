@@ -158,6 +158,16 @@ def classifier(x, num_classes, stride=1, train=True, **kwargs):
         return x, b
     return x
 
+def refine_high_resolution(x):
+    x = _DSConv(x, 8, stride=1)
+    x = tf.keras.layers.Conv2D(1,
+                            kernel_size=3, 
+                            activation='sigmoid',
+                            padding='same',
+                            kernel_initializer='he_normal')(x)
+    return x
+
+
 def fastSCNN(input_shape=(256, 192, 3), train=True):
     input_ = tf.keras.layers.Input(shape=input_shape)
     down = learningToDownsample(input_, dw_ch1=32, dw_ch2=48, out_ch=64)
@@ -169,6 +179,9 @@ def fastSCNN(input_shape=(256, 192, 3), train=True):
         cls, boundary = cls
         output_c = BilinearInterpolation(input_shape[:2])(cls)
         output_b = BilinearInterpolation(input_shape[:2])(boundary)
+        
+        output_c = _DSConv(output_c, 8, stride=1)
+        # output_b = refine_high_resolution(output_b)
 
         output_c = tf.keras.layers.Conv2D(1,
                                         kernel_size=3, 
@@ -185,9 +198,11 @@ def fastSCNN(input_shape=(256, 192, 3), train=True):
         output = [output_c, output_b]
     else: 
         output = BilinearInterpolation(input_shape[:2])(cls)
+        output = _DSConv(output, 8, stride=1)
         output = tf.keras.layers.Conv2D(1,
                                         kernel_size=3, 
                                         activation='sigmoid',
+                                        padding='same',
                                         kernel_initializer='he_normal')(output)
     return tf.keras.models.Model(input_, output)
     
