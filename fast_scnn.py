@@ -58,7 +58,8 @@ def _DSConv(x, out_ch, stride=1):
     x = tf.keras.layers.Activation("relu")(x)
     return x
 
-def linearBottlenect(x, out_ch, t=6, stride=1, **kwargs):
+
+def linearBottleneck(x, out_ch, t=6, stride=1, **kwargs):
     use_shortcut = (stride == 1 and x.shape[-1] == out_ch)
     # point-wise
     out = _ConvBNReLU(x, x.shape[-1]*t, 1)
@@ -73,14 +74,28 @@ def linearBottlenect(x, out_ch, t=6, stride=1, **kwargs):
         out = x + out
     return out
 
-class BilinearInterpolation(tf.keras.layers.Layer):
-    def __init__(self, size):
-        super(BilinearInterpolation, self).__init__()
-        self.size = size
+# class BilinearInterpolation(tf.keras.layers.Layer):
+#     def __init__(self, size):
+#         super(BilinearInterpolation, self).__init__()
+#         self.size = size
         
-    def call(self, x):
-        self.out = tf.compat.v1.image.resize_bilinear(x, self.size, align_corners=True)
-        return self.out
+#     def call(self, x):
+#         self.out = tf.compat.v1.image.resize_bilinear(x, self.size, align_corners=True)
+#         return self.out
+
+#     def get_config(self):
+#             config = super().get_config().copy()
+#             config.update({
+#                 'size': self.size,
+#                 })
+#                 # 'out': self.out,
+#             return config
+
+def bilinear_interpolation(x, size):
+    return tf.compat.v1.image.resize_bilinear(x, size, align_corners=True)
+
+def BilinearInterpolation(size):
+    return tf.keras.layers.Lambda(lambda z:bilinear_interpolation(z, size))
 
 def __pyramid_module(x, pool_size, inter_ch, **kwargs):
     size = x.shape[-3:-1]
@@ -112,9 +127,9 @@ def _block_layer(x, block, out_ch, num_block, t=6, stride=1):
     return  x
     
 def globalFeatureExtractor(x, block_channels=[64, 96, 128], out_ch=128, t=6, num_block=(3, 3, 3), **kwargs):
-    x = _block_layer(x, linearBottlenect, block_channels[0], num_block[0], t, stride=2)
-    x = _block_layer(x, linearBottlenect, block_channels[1], num_block[1], t, stride=2)
-    x = _block_layer(x, linearBottlenect, block_channels[2], num_block[2], t, stride=1)
+    x = _block_layer(x, linearBottleneck, block_channels[0], num_block[0], t, stride=2)
+    x = _block_layer(x, linearBottleneck, block_channels[1], num_block[1], t, stride=2)
+    x = _block_layer(x, linearBottleneck, block_channels[2], num_block[2], t, stride=1)
     x = pyramidPooling(x, out_ch)
     return x 
 
@@ -168,8 +183,12 @@ def refine_high_resolution(x):
     return x
 
 
-def fastSCNN(input_shape=(256, 192, 3), train=True):
+def fastSCNN(input_shape=(256, 192, 3), train=True, android=False):
     input_ = tf.keras.layers.Input(shape=input_shape)
+    if android:
+        input__ = tf.keras.layers.Input(shape=input_shape[:-1]+(4,))
+        input_ = tf.keras.layers.Lambda(lambda x : x[:,:,:,:3])(input__)
+    
     down = learningToDownsample(input_, dw_ch1=32, dw_ch2=48, out_ch=64)
     gf = globalFeatureExtractor(down)
     fus = featureFusionModule(down, gf, out_ch=128)
@@ -204,6 +223,9 @@ def fastSCNN(input_shape=(256, 192, 3), train=True):
                                         activation='sigmoid',
                                         padding='same',
                                         kernel_initializer='he_normal')(output)
+
+    if android:
+        return tf.keras.models.Model(input__, output)
     return tf.keras.models.Model(input_, output)
     
 
