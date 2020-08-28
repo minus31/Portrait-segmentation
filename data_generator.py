@@ -44,9 +44,6 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
     def __get_data(self, img_path, mask_path):
         # Load img & mask
         h, w = self.dim
-
-        print(img_path, mask_path, sep="\n")
-
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
