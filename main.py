@@ -51,7 +51,16 @@ class SeerSegmentation():
             os.environ["CUDA_VISIBLE_DEVICES"] = gpu_number.strip()
 
         ##############################################
-        # self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
+        # selfie_train = [os.path.join("./dataset/selfie/training/", x) for x in sorted(os.listdir("./dataset/selfie/training/")) if 'matte' not in x]
+        # selfie_test = [os.path.join("./dataset/selfie/testing/", x) for x in sorted(os.listdir("./dataset/selfie/testing/")) if 'matte' not in x]
+        # supervisely = []
+        # for ds in [os.path.join('./dataset/Supervisely_person_dataset/', x) for x in os.listdir('./dataset/Supervisely_person_dataset/') if 'ds' in x]:
+        #     supervisely = supervisely_x + [os.path.join(ds, "img", x) for x in os.listdir(os.path.join(ds, "img")) if x.endswith(".png")]
+
+        # over_k15 = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15.npy")
+        # custom = [os.path.join("./dataset/Custom/img/", x) for x in sorted(os.listdir("./dataset/Custom/img/")) if x != ".DS_Store"]
+
+        # self.img_paths = selfie_train + selfie_test + supervisely + custom
         self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15_withBlankDoubled_and_Custom_doubled_andCopy_blob.npy")
         
     def build_model(self, train=True):
