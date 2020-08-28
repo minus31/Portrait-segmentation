@@ -45,11 +45,10 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         # Load img & mask
         h, w = self.dim
 
+        print(img_path, mask_path, sep="\n")
+
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        try : 
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        except : 
-            print(img_path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
         use_rot_90 = img.shape[0] < img.shape[1]
 
