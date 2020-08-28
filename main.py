@@ -52,7 +52,7 @@ class SeerSegmentation():
 
         ##############################################
         # self.img_paths = np.load("./dataset/img_paths_with_supervisely.npy")
-        self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15_withBlankDoubled_and_Custom_doubled.npy")
+        self.img_paths = np.load("./dataset/img_paths_with_supervisely_nosmallobject_k15_withBlankDoubled_and_Custom_doubled_andCopy_blob.npy")
         
     def build_model(self, train=True):
         return fastSCNN(self.input_shape, train=train)

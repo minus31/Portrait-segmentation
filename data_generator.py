@@ -48,7 +48,7 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
         use_rot_90 = img.shape[0] < img.shape[1]
-
+        
         if use_rot_90:
             img = rotate90_img(img)
         img = cv2.resize(img, (w, h))
@@ -61,8 +61,10 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
             mask = np.zeros(self.dim, dtype=np.int)
         else: 
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            print(mask_path)
+            print(mask.shape)
             if use_rot_90:
-                mask = rotate90_img(mask)    
+                mask = rotate90_img(mask)
             mask = cv2.resize(mask, (w, h))
 
         if self.augment:
@@ -102,8 +104,8 @@ class DataGeneratorMatting(tf.keras.utils.Sequence):
         
         # Generate data
         for idx, ID in enumerate(list_IDs_temp):
-            # Store sample & uv maskp
-            if 'Supervisely' not in ID and "/Custom/img" not in ID:
+            # Store sample & uv mask
+            if 'Supervisely' not in ID and "/Custom/img" not in ID and "/copy_blob/img" not in ID:
                 mask_ID = ID.split(".p")[0] + "_matte.png"
             else :
                 mask_ID = ID.replace("/img/", "/alpha/")

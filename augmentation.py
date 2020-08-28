@@ -6,7 +6,6 @@ import numpy as np
 # * Rotation (-45, -22, 22, 45)
 # * Color gamma Variation (0.5, 0.8, 1.2, 1.5)
 
-
 def random_activate(aug_func):
 
     def wrapper(*args, **kwargs):
