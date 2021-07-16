@@ -4,13 +4,12 @@ import argparse
 import cv2
 import numpy as np
 import tensorflow as tf
+import keras
 
 from data_generator import DataGeneratorMatting
 from metrics import *
 from network import *
 from fast_scnn import fastSCNN
-
-import keras
 
 import warnings
 warnings.filterwarnings("ignore")

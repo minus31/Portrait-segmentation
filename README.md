@@ -4,6 +4,29 @@
 
 This project is Keras implemented Portrait segmentation model.
 
+### Files 
+
+- *.py
+
+```
+augmentation.py 
+data_generator.py 
+preprocess.py
+metrics.py 
+main.py : Run training
+fast_scnn.py : Fast-SCNN model ; Faster but less accurate
+network.py : MattingNet model ; More accurate but slow
+```
+
+- *.ipynb
+
+```
+Convert_to_mlmodels.ipynb : h5 -> mlmodel 
+Convert_to_tflite.ipynb : h5 -> tflite(3channel, 4channel)
+dataloader_test.ipynb : dataloder validation
+Model_output_EDA.ipynb : Check model output
+```
+
 #### How to train
 
 - **Train**
@@ -14,13 +37,13 @@ This project is Keras implemented Portrait segmentation model.
 
 `python main.py --input_shape=256 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=100 --checkpoint_path='./trained_models/mattingnet/' --weight_dir="./trained_models/mattingnet/20200202/490-0.12.h5" --train=True --finetune=True --convert=False --android=False --model_size="big"`
 
-* **light model Fine-Tuning**
+### Model 
 
-`python main.py --input_shape=512 --nb_epoch=10000 --batch_size=32 --lr=0.0001 --val_ratio=0.8 --checkpoint=31 --checkpoint_path='./trained_models/lightnet/' --weight_dir="./trained_models/lightnet/20191226/132-0.21.h5" --train=True --finetune=True --convert=False --android=False --model="lightnet"`
+- Fast-SCNN
 
+![](https://www.dropbox.com/s/sh53kunvcaz71ey/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202021-07-16%2011.31.24.png?dl=1)
 
-
-#### PFCN+ DATASET
+### DATASET
 
 PFCN+ dataset was pulished in <a href="#pfcn">[1]</a>. Most of the solutions to handle portrait segmentation task are using this dataset. Although it's handy for us as well, it has 2 problems on building a segmentation model which is suitable to our needs.
 
@@ -90,32 +113,7 @@ PFCN+ dataset was pulished in <a href="#pfcn">[1]</a>. Most of the solutions to 
 
 
 
-## Contribution 
-
-1. 삼성폰에서 Softmax를 썼을 때 이상하게 추론되는 문제 
-2. 
-3. 
-
-##### Extra1) Concepts
-
------
-
-- Trimap : Image with 3 categories, Foreground, Background, Unknown
-- Matte : Alpha channel for Object
-
-$$
-Image = \alpha Image + (1-\alpha) Image
-$$
-
-----
-
-##### Extra2) Log of Editing 
-
-2019.12.03 : Initializing
-
-----
-
-##### Extra3) References
+## References
 
 ###### • Companies
 
@@ -154,6 +152,8 @@ $$
 
 [6] Xi Chen et al. Boundary-Aware Network for Fast and High-Accuracy Portrait Segmentation. https://arxiv.org/pdf/1901.03814.pdf
 
+[6] [Rudra P K Poudel](https://arxiv.org/search/cs?searchtype=author&query=Poudel%2C+R+P+K) et al. Fast-SCNN: Fast Semantic Segmentation Network. https://arxiv.org/abs/1902.04502
+
 <img src="https://www.dropbox.com/s/l5u1lfn5qu6ddto/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202019-12-17%2016.59.52.png?dl=1">
 
 1. Semantic extraction  : just encoder decoder (replace it with the present model)
@@ -163,48 +163,3 @@ $$
 
 [7] Qifeng Chen, Dingzeyu Li, Chi-Keung Tang. KNN matting*. http://dingzeyu.li/files/knn-matting-cvpr2012.pdf
 
-----
-
-### 사용가능 Docker 
-
-- opencv (sudo apt-get 으로 다운로드하는 명령어 적어두기)
-- keras
-- git 
-
-#### 구축 예정 
-
-```bash
-docker run -Pit -u root:root --name dlhk --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3
-```
-
-> `e` 태그는 비밀번호 설정하는 것
-
-`docker run -Pit --name dlhk --runtime=nvidia -v /home/hyunkim:/tf/hyunkim -e "0000" -p 8888:8888 -p 6006:6006 tensorflow/tensorflow:latest-gpu-py3`
-
-* 추가될 패키지 
-
-  * cv2
-
-    * ```
-    apt-get update
-      apt-get install -y libsm6 libxext6 libxrender-dev
-      pip install opencv-python
-      ```
-  
-    *  
-
-  * git 
-
-  * 
-
-
-
-### Tensorboard 명령
-
-`tensorboard --logdir=./logs --port=8080`
-
-
-
-scp -r -i ~/.ssh/hyun.pem ./trained_models/20121212/30.h5 hyunkim@35.229.177.132:/home/hyunkim/Portrait-segmentation/trained_models/ ./
-
-### 
